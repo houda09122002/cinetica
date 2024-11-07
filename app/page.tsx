@@ -14,7 +14,6 @@ export default function LoginPage() {
     const [error, setError] = useState('');
 
     const handleLogin = () => {
-        // Remplacez par la logique de validation des identifiants
         if (username === user.username && password === "votre_mot_de_passe") {
             setError('');
             // Rediriger ou changer l'état de connexion
@@ -25,15 +24,15 @@ export default function LoginPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-200">
-            <div className="flex w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
+            <div className="flex w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
                 
-                {/* Section de gauche */}
-                <div className="flex-1 p-8 bg-black text-white flex flex-col justify-center">
+                {/* Section de gauche (fond noir) */}
+                <div className="w-full md:w-1/2 p-8 flex flex-col justify-center bg-black text-white">
                     <h1 className="text-4xl font-bold mb-2">Welcome to</h1>
                     <h2 className="text-6xl font-bold text-purple-500 mb-8">Cinetica</h2>
                     
-                    <Card className="bg-transparent">
-                        <h3 className="text-2xl font-semibold mb-4">Login</h3>
+                    <Card className="bg-transparent p-4 border-none">
+                        <h3 className="text-2xl font-semibold mb-4 text-white">Login</h3>
                         <Input
                             placeholder="Username"
                             value={username}
@@ -57,12 +56,12 @@ export default function LoginPage() {
                     </Card>
                 </div>
                 
-                {/* Section de droite (Image) */}
-                <div className="hidden md:block w-1/2">
+                {/* Section de droite (image de clap cinéma) */}
+                <div className="hidden md:flex w-1/2 bg-white items-center justify-center">
                     <img
-                        src="../public/clapperboard.jpeg"  // Remplacez par le chemin réel de votre image
+                        src="/clapperboard.jpeg"
                         alt="Cinema Clapperboard"
-                        className="object-cover w-full h-full"
+                        className="object-contain w-full h-full"
                     />
                 </div>
             </div>
