@@ -13,13 +13,24 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleLogin = () => {
-        if (username === user.username && password === "votre_mot_de_passe") {
-            setError('');
-            // Rediriger ou changer l'état de connexion
-        } else {
-            setError("Nom d'utilisateur ou mot de passe incorrect.");
-        }
+    const handleLogin = async () => {
+      setError('');
+    
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }), // Assurez-vous que 'username' et 'password' sont correctement définis
+      });
+    
+      const data = await response.json();
+    
+      if (response.ok) {
+        console.log('Connexion réussie');
+      } else {
+        setError(data.error);
+      }
     };
 
     return (
