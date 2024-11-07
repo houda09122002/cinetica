@@ -1,17 +1,15 @@
-// app/login/page.tsx
-
 "use client";
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { user } from '../repository/user';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLogged, setIsLogged] = useState(false); // Nouveau state pour gérer la connexion
 
     const handleLogin = async () => {
       setError('');
@@ -21,17 +19,30 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }), // Assurez-vous que 'username' et 'password' sont correctement définis
+        body: JSON.stringify({ username, password }), // Envoi des informations de connexion
       });
     
       const data = await response.json();
     
       if (response.ok) {
-        console.log('Connexion réussie');
+        setIsLogged(true);  // Connexion réussie
       } else {
-        setError(data.error);
+        setIsLogged(false);  // Connexion échouée
+        setError(data.error);  // Affichage de l'erreur
       }
     };
+
+    if (isLogged) {
+      // Si l'utilisateur est connecté, afficher le contenu principal de l'application
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+          <div className="p-8 bg-white rounded-lg shadow-md">
+            <h1 className="text-4xl font-bold text-center">Main Application Content</h1>
+            <p className="mt-4 text-center">Bienvenue sur l'application !</p>
+          </div>
+        </div>
+      );
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-200">
