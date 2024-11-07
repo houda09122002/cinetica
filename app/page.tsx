@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useRouter } from 'next/navigation'; 
+
 
 export default function LoginPage() {
+    const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -25,9 +28,10 @@ export default function LoginPage() {
       const data = await response.json();
     
       if (response.ok) {
-        setIsLogged(true);  // Connexion réussie
+        setIsLogged(true); 
+        router.push('/main'); // Connexion réussie
       } else {
-        setIsLogged(false);  // Connexion échouée
+        setIsLogged(false); 
         setError(data.error);  // Affichage de l'erreur
       }
     };
@@ -35,11 +39,8 @@ export default function LoginPage() {
     if (isLogged) {
       // Si l'utilisateur est connecté, afficher le contenu principal de l'application
       return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-          <div className="p-8 bg-white rounded-lg shadow-md">
-            <h1 className="text-4xl font-bold text-center">Main Application Content</h1>
-            <p className="mt-4 text-center">Bienvenue sur l'application !</p>
-          </div>
+        <div className="flex justify-center items-center h-full">
+          <h1 className="text-4xl font-bold text-gray-700">En cours de développement…</h1>
         </div>
       );
     }
