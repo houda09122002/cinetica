@@ -2,21 +2,39 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Clapperboard, Compass, Film, Users, Star, Tv, ChevronLeft, ChevronRight } from "lucide-react"
+import { 
+  Clapperboard, 
+  Compass, 
+  Film, 
+  Users, 
+  Star, 
+  Tv, 
+  ChevronLeft, 
+  ChevronRight,
+  LogOut
+} from "lucide-react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter()
   const [isCollapsed, setIsCollapsed] = useState(false)
+
+  // Handler pour la déconnexion
+  const handleLogout = () => {
+    // Ici vous pouvez ajouter la logique de déconnexion (supprimer le token, etc.)
+    router.push("/") // Redirige vers la page d'accueil
+  }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Sidebar */}
       <aside className={cn(
-        "fixed left-0 top-0 h-full bg-card border-r transition-all duration-300",
+        "fixed left-0 top-0 h-full bg-card border-r transition-all duration-300 flex flex-col",
         isCollapsed ? "w-16" : "w-64"
       )}>
         {/* Bouton pour réduire/agrandir */}
@@ -32,7 +50,7 @@ export default function MainLayout({
           }
         </Button>
 
-        <div className="p-6">
+        <div className="flex-1 p-6">
           {/* Logo */}
           <div className="mb-8">
             <h2 className="flex items-center gap-2">
@@ -110,6 +128,21 @@ export default function MainLayout({
               </div>
             </div>
           </nav>
+        </div>
+
+        {/* Footer avec bouton de déconnexion */}
+        <div className="p-6 border-t">
+          <Button 
+            variant="ghost" 
+            className={cn(
+              "w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-100",
+              isCollapsed && "px-2"
+            )}
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4 shrink-0" />
+            {!isCollapsed && <span>Déconnexion</span>}
+          </Button>
         </div>
       </aside>
 
