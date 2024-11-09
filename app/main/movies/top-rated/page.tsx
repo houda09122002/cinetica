@@ -8,10 +8,26 @@ import { format } from "date-fns"
 import Image from "next/image"
 import { Suspense } from "react"
 import { MediaDialog } from "@/components/ui/media-dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Search } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+const formatDate = (date: string | null | undefined) => {
+  if (!date) return "Date inconnue"
+  try {
+    return format(new Date(date), 'MMM d, yyyy')
+  } catch (error) {
+    return "Date invalide"
+  }
+}
 
 export default function TopRatedMoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([])
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+  const [originalMovies, setOriginalMovies] = useState<Movie[]>([])
 
   useEffect(() => {
     fetchTopRatedMovies()
@@ -22,14 +38,69 @@ export default function TopRatedMoviesPage() {
       const response = await fetch('/api/movies/top-rated')
       const data = await response.json()
       setMovies(data.results || [])
+      setOriginalMovies(data.results || [])
     } catch (error) {
       console.error('Error:', error)
     }
   }
 
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!searchQuery.trim()) {
+      setMovies(originalMovies)
+      return
+    }
+
+    setIsSearching(true)
+    try {
+      const response = await fetch(`/api/search?query=${encodeURIComponent(searchQuery)}`)
+      const data = await response.json()
+      setMovies(data.movies || [])
+    } catch (error) {
+      console.error('Search error:', error)
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
   return (
-    <>
+    <div className="space-y-8">
+      <header>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold">
+            {searchQuery ? 'Search Results' : 'Top Rated Movies'}
+          </h1>
+          <form onSubmit={handleSearch} className="relative w-72">
+            <Search className={cn(
+              "absolute left-2 top-2.5 h-4 w-4",
+              isSearching ? "animate-spin" : "text-muted-foreground"
+            )} />
+            <Input
+              placeholder="Search movies..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Button 
+              type="submit" 
+              variant="ghost" 
+              size="sm"
+              className="absolute right-0 top-0 h-full"
+            >
+              Search
+            </Button>
+          </form>
+        </div>
+      </header>
+
       <Suspense fallback={<div>Loading...</div>}>
+        {movies.length === 0 && searchQuery && (
+          <div className="text-center text-muted-foreground">
+            No results found for "{searchQuery}"
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {movies.map((movie) => (
             <Card 
@@ -67,6 +138,6 @@ export default function TopRatedMoviesPage() {
         media={selectedMovie}
         isMovie={true}
       />
-    </>
+    </div>
   )
 }
