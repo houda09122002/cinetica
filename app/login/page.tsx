@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { user } from '../../repository/user';
+
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
