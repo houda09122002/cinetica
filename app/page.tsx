@@ -12,7 +12,7 @@ export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [isLogged, setIsLogged] = useState(false); // Nouveau state pour gérer la connexion
+    const [isLogged, setIsLogged] = useState(false); 
 
     const handleLogin = async () => {
       setError('');
@@ -22,14 +22,14 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }), // Envoi des informations de connexion
+        body: JSON.stringify({ username, password }), 
       });
     
       const data = await response.json();
     
       if (response.ok) {
         setIsLogged(true); 
-        router.push('/main'); // Connexion réussie
+        router.push('/main'); 
       } else {
         setIsLogged(false); 
         setError(data.error);  // Affichage de l'erreur
