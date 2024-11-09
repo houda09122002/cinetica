@@ -1,4 +1,4 @@
-// app/login/page.tsx
+'use client';
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -12,12 +12,26 @@ export default function LoginPage() {
     const [isLogged, setIsLogged] = useState(false);
     const [error, setError] = useState('');
 
-    const handleLogin = () => {
-        if (username === user.username && password === "votre_mot_de_passe") {  // Remplacez par le mot de passe correct
-            setIsLogged(true);
-            setError('');
-        } else {
-            setError("Nom d'utilisateur ou mot de passe incorrect.");
+    const handleLogin = async () => {
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setIsLogged(true);
+                setError('');
+            } else {
+                setError(data.error);
+            }
+        } catch (error) {
+            setError("Une erreur s'est produite lors de la connexion");
         }
     };
 
