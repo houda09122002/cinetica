@@ -118,24 +118,36 @@ export default function MainLayout({
             <div>
               {!isCollapsed && <p className="text-sm text-muted-foreground mb-2">TV Shows</p>}
               <div className="space-y-1">
-                <Button variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isCollapsed && "px-2"
-                )}>
+                <Button 
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isCollapsed && "px-2"
+                  )}
+                  onClick={() => router.push('/main/shows/on-the-air')}
+                >
                   <Tv className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>On the air</span>}
                 </Button>
-                <Button variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isCollapsed && "px-2"
-                )}>
+                <Button 
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isCollapsed && "px-2"
+                  )}
+                  onClick={() => router.push('/main/shows/popular')}
+                >
                   <Users className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>Popular</span>}
                 </Button>
-                <Button variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isCollapsed && "px-2"
-                )}>
+                <Button 
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isCollapsed && "px-2"
+                  )}
+                  onClick={() => router.push('/main/shows/top-rated')}
+                >
                   <Star className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>Top Rated</span>}
                 </Button>

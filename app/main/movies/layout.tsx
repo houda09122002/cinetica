@@ -15,13 +15,13 @@ export default function MoviesLayout({
   const getTitle = () => {
     switch (pathname) {
       case '/main/movies/now-playing':
-        return 'Films en cours'
+        return 'Now Playing Movies'
       case '/main/movies/popular':
-        return 'Films populaires'
+        return 'Popular Movies'
       case '/main/movies/top-rated':
-        return 'Films les mieux notés'
+        return 'Top Rated Movies'
       default:
-        return 'Films'
+        return 'Movies'
     }
   }
 
