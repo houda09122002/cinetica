@@ -11,6 +11,8 @@ import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import type { Movie } from "../api/entities/movie"
 import type { TVShow } from "../api/entities/TVShow"
+import { format } from "date-fns";
+import { fr } from "date-fns/locale"; // Pour la localisation française
 
 interface DiscoverData {
   movies: Movie[];
@@ -100,10 +102,15 @@ export default function MainPage() {
                     </CardTitle>
                     <CardDescription className="flex items-center justify-between">
                       <span>
-                        {new Date(isMovie ? 
-                          (item as Movie).release_date : 
-                          (item as TVShow).first_air_date
-                        ).getFullYear()}
+                        {format(
+                          new Date(
+                            isMovie ? 
+                              (item as Movie).release_date : 
+                              (item as TVShow).first_air_date
+                          ),
+                          'dd/MM/yyyy',
+                          { locale: fr }
+                        )}
                       </span>
                       <Badge variant="secondary">
                         {item.vote_average.toFixed(1)} ★
