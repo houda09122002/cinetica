@@ -1,35 +1,35 @@
 "use client"
 
+import { useState, useEffect} from "react"
+import { Movie } from "@/app/api/entities/movie"
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import Image from "next/image"
 import { format } from "date-fns"
-import { fr } from "date-fns/locale"
-import { useState, useEffect, Suspense } from "react"
-import type { Movie } from "@/app/api/entities/movie"
+import Image from "next/image"
+import { Suspense } from "react"
 import { MediaDialog } from "@/components/ui/media-dialog"
 
-export default function NowPlayingPage() {
+export default function NowPlayingMoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([])
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
 
   useEffect(() => {
-    fetchNowPlaying()
+    fetchNowPlayingMovies()
   }, [])
 
-  const fetchNowPlaying = async () => {
+  const fetchNowPlayingMovies = async () => {
     try {
       const response = await fetch('/api/movies/now-playing')
       const data = await response.json()
       setMovies(data.results || [])
     } catch (error) {
-      console.error('Erreur lors de la récupération des films:', error)
+      console.error('Error:', error)
     }
   }
 
   return (
     <>
-      <Suspense fallback={<div>Chargement...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {movies.map((movie) => (
             <Card 
@@ -69,4 +69,4 @@ export default function NowPlayingPage() {
       />
     </>
   )
-} 
+}
