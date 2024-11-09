@@ -66,7 +66,7 @@ export default function MainLayout({
               <Button variant="ghost" className={cn(
                 "w-full justify-start gap-2",
                 isCollapsed && "px-2"
-              )}>
+              )} onClick={() => router.push('/main')}>
                 <Compass className="w-4 h-4 shrink-0" />
                 {!isCollapsed && <span>Discover</span>}
               </Button>
