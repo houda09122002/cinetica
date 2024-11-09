@@ -11,7 +11,9 @@ import {
   Tv, 
   ChevronLeft, 
   ChevronRight,
-  LogOut
+  LogOut,
+  Trophy,
+  TrendingUp
 } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -76,25 +78,37 @@ export default function MainLayout({
             <div>
               {!isCollapsed && <p className="text-sm text-muted-foreground mb-2">Movies</p>}
               <div className="space-y-1">
-                <Button variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isCollapsed && "px-2"
-                )}>
-                  <Film className="w-4 h-4 shrink-0" />
-                  {!isCollapsed && <span>Now playing</span>}
+                <Button 
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isCollapsed && "px-2"
+                  )}
+                  onClick={() => router.push('/main/movies/now-playing')}
+                >
+                  <Film className="w-4 h-4" />
+                  {!isCollapsed && <span>Now Playing</span>}
                 </Button>
-                <Button variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isCollapsed && "px-2"
-                )}>
-                  <Users className="w-4 h-4 shrink-0" />
+                <Button 
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isCollapsed && "px-2"
+                  )}
+                  onClick={() => router.push('/main/movies/popular')}
+                >
+                  <TrendingUp className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>Popular</span>}
                 </Button>
-                <Button variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isCollapsed && "px-2"
-                )}>
-                  <Star className="w-4 h-4 shrink-0" />
+                <Button 
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isCollapsed && "px-2"
+                  )}
+                  onClick={() => router.push('/main/movies/top-rated')}
+                >
+                  <Trophy className="w-4 h-4" />
                   {!isCollapsed && <span>Top Rated</span>}
                 </Button>
               </div>
