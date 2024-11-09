@@ -140,11 +140,11 @@ export default function MainPage() {
       {/* En-tête de la page */}
       <header>
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Découvrez</h1>
+        <h1 className="text-3xl font-bold">Discover</h1>
           <div className="relative w-72">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Rechercher..."
+              placeholder="Search..."
               className="pl-8"
             />
           </div>
@@ -156,13 +156,13 @@ export default function MainPage() {
         {discoverData && (
           <div className="space-y-12">
             <MediaCarousel 
-              title="Films" 
+              title="Movies" 
               items={discoverData.movies} 
               scrollRef={movieScrollRef}
               isMovie={true}
             />
             <MediaCarousel 
-              title="Séries TV" 
+              title="TV Shows" 
               items={discoverData.shows}
               scrollRef={tvShowScrollRef}
               isMovie={false}

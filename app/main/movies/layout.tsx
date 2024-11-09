@@ -33,7 +33,7 @@ export default function MoviesLayout({
           <div className="relative w-72">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Rechercher un film..."
+              placeholder="Search for a movie..."
               className="pl-8"
             />
           </div>
