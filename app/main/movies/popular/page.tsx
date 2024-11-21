@@ -18,7 +18,7 @@ const formatDate = (date: string | null | undefined) => {
   try {
     return format(new Date(date), 'MMM d, yyyy')
   } catch (error) {
-    return "Date invalide"
+    console.error('Error:', error)
   }
 }
 

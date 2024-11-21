@@ -1,7 +1,5 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
 import { usePathname } from 'next/navigation'
 
 export default function MoviesLayout({
