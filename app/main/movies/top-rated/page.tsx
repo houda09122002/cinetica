@@ -13,15 +13,6 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const formatDate = (date: string | null | undefined) => {
-  if (!date) return "Date inconnue"
-  try {
-    return format(new Date(date), 'MMM d, yyyy')
-  } catch (error) {
-    return "Date invalide"
-  }
-}
-
 export default function TopRatedMoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([])
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)

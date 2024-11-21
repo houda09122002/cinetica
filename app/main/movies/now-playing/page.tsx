@@ -97,7 +97,7 @@ export default function NowPlayingMoviesPage() {
       <Suspense fallback={<div>Loading...</div>}>
         {movies.length === 0 && searchQuery && (
           <div className="text-center text-muted-foreground">
-            No results found for "{searchQuery}"
+            No results found for &quot;{searchQuery}&quot;
           </div>
         )}
 

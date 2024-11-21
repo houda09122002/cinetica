@@ -68,9 +68,7 @@ export default function MainPage() {
     try {
       const response = await fetch('/api/discover')
       const data = await response.json()
-      if (data.movies && data.shows) {
-        setDiscoverData(data)
-      }
+      setDiscoverData(data)
     } catch (error) {
       console.error('Erreur:', error)
     }
@@ -92,13 +90,11 @@ export default function MainPage() {
     title, 
     items, 
     scrollRef,
-    isMovie = true,
     onItemClick
   }: { 
     title: string, 
     items: Movie[] | TVShow[], 
     scrollRef: React.RefObject<HTMLDivElement>,
-    isMovie?: boolean,
     onItemClick: (item: Movie | TVShow) => void
   }) => {
     if (!items || items.length === 0) {
@@ -132,22 +128,20 @@ export default function MainPage() {
                   <div className="aspect-[2/3] relative">
                     <Image
                       src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                      alt={isMovie ? (item as Movie).title : (item as TVShow).name}
+                      alt={item.title}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <CardHeader className="p-4">
                     <CardTitle className="text-lg">
-                      {isMovie ? (item as Movie).title : (item as TVShow).name}
+                      {item.title}
                     </CardTitle>
                     <CardDescription className="flex items-center justify-between">
                       <span>
                         {formatDate(
-                          isMovie ? 
-                            (item as Movie).release_date : 
-                            (item as TVShow).first_air_date,
-                          isMovie
+                          item.release_date,
+                          true
                         )}
                       </span>
                       <Badge variant="secondary">
@@ -221,7 +215,6 @@ export default function MainPage() {
                 title={searchQuery ? "Movies Results" : "Movies"} 
                 items={discoverData.movies} 
                 scrollRef={movieScrollRef}
-                isMovie={true}
                 onItemClick={(item) => setSelectedMovie(item as Movie)}
               />
             )}
@@ -230,7 +223,6 @@ export default function MainPage() {
                 title={searchQuery ? "TV Shows Results" : "TV Shows"}
                 items={discoverData.shows}
                 scrollRef={tvShowScrollRef}
-                isMovie={false}
                 onItemClick={(item) => setSelectedShow(item as TVShow)}
               />
             )}
