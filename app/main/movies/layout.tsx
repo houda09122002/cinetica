@@ -9,7 +9,6 @@ export default function MoviesLayout({
 }) {
   const pathname = usePathname()
 
-
   return (
     <div>
       {children}
