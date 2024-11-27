@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useRouter } from 'next/navigation'; 
+import Image from 'next/image';
 
 
 export default function LoginPage() {
@@ -81,10 +82,11 @@ export default function LoginPage() {
                 
                 {/* Section de droite (image de clap cinéma) */}
                 <div className="hidden md:flex w-1/2 bg-white items-center justify-center">
-                    <img
+                    <Image 
                         src="/clapperboard.jpeg"
                         alt="Cinema Clapperboard"
-                        className="object-contain w-full h-full"
+                        width={500}
+                        height={300}
                     />
                 </div>
             </div>

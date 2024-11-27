@@ -18,7 +18,7 @@ const formatDate = (date: string | null | undefined) => {
   try {
     return format(new Date(date), 'MMM d, yyyy')
   } catch (error) {
-    console.error('Error:', error)
+    return "Date invalide"
   }
 }
 
@@ -97,7 +97,7 @@ export default function NowPlayingMoviesPage() {
       <Suspense fallback={<div>Loading...</div>}>
         {movies.length === 0 && searchQuery && (
           <div className="text-center text-muted-foreground">
-            No results found for &quot;{searchQuery}&quot;
+            No results found for "{searchQuery}"
           </div>
         )}
 

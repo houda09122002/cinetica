@@ -11,31 +11,16 @@ import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import type { Movie } from "../api/entities/movie"
 import type { TVShow } from "../api/entities/TVShow"
-import { format } from "date-fns"
-import { fr } from "date-fns/locale"
-import { MediaDialog } from "@/components/ui/media-dialog"
-import { cn } from "@/lib/utils"
+import { format } from "date-fns";
+import { fr } from "date-fns/locale"; // Pour la localisation française
 
 interface DiscoverData {
   movies: Movie[];
   shows: TVShow[];
 }
 
-const formatDate = (date: string | null | undefined, isMovie: boolean) => {
-  if (!date) return "Date inconnue"
-  try {
-    return format(new Date(date), 'dd/MM/yyyy', { locale: fr })
-  } catch (error) {
-    return "Date invalide"
-  }
-}
-
 export default function MainPage() {
   const [discoverData, setDiscoverData] = useState<DiscoverData | null>(null)
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
-  const [selectedShow, setSelectedShow] = useState<TVShow | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
   const movieScrollRef = useRef<HTMLDivElement>(null)
   const tvShowScrollRef = useRef<HTMLDivElement>(null)
 
@@ -43,34 +28,16 @@ export default function MainPage() {
     fetchDiscoverData()
   }, [])
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) {
-      fetchDiscoverData()
-      return
-    }
-
-    setIsSearching(true)
-    try {
-      const response = await fetch(`/api/search?query=${encodeURIComponent(searchQuery)}`)
-      const data = await response.json()
-      if (data.movies && data.shows) {
-        setDiscoverData(data)
-      }
-    } catch (error) {
-      console.error('Search error:', error)
-    } finally {
-      setIsSearching(false)
-    }
-  }
-
   const fetchDiscoverData = async () => {
     try {
       const response = await fetch('/api/discover')
       const data = await response.json()
-      setDiscoverData(data)
+      console.log('Données reçues:', data)
+      if (data.movies && data.shows) {
+        setDiscoverData(data)
+      }
     } catch (error) {
-      console.error('Erreur:', error)
+      console.error('Erreur lors de la récupération des données:', error)
     }
   }
 
@@ -90,12 +57,12 @@ export default function MainPage() {
     title, 
     items, 
     scrollRef,
-    onItemClick
+    isMovie = true 
   }: { 
     title: string, 
     items: Movie[] | TVShow[], 
     scrollRef: React.RefObject<HTMLDivElement>,
-    onItemClick: (item: Movie | TVShow) => void
+    isMovie?: boolean 
   }) => {
     if (!items || items.length === 0) {
       return <div>Aucun contenu disponible</div>
@@ -120,28 +87,29 @@ export default function MainPage() {
           >
             <div className="flex gap-4 w-max">
               {items.map((item) => (
-                <Card 
-                  key={item.id} 
-                  className="w-[300px] flex-shrink-0 overflow-hidden cursor-pointer transition-all hover:scale-105"
-                  onClick={() => onItemClick(item)}
-                >
+                <Card key={item.id} className="w-[300px] flex-shrink-0 overflow-hidden">
                   <div className="aspect-[2/3] relative">
                     <Image
                       src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                      alt={item.title}
+                      alt={isMovie ? (item as Movie).title : (item as TVShow).name}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <CardHeader className="p-4">
                     <CardTitle className="text-lg">
-                      {item.title}
+                      {isMovie ? (item as Movie).title : (item as TVShow).name}
                     </CardTitle>
                     <CardDescription className="flex items-center justify-between">
                       <span>
-                        {formatDate(
-                          item.release_date,
-                          true
+                        {format(
+                          new Date(
+                            isMovie ? 
+                              (item as Movie).release_date : 
+                              (item as TVShow).first_air_date
+                          ),
+                          'dd/MM/yyyy',
+                          { locale: fr }
                         )}
                       </span>
                       <Badge variant="secondary">
@@ -169,80 +137,39 @@ export default function MainPage() {
 
   return (
     <div className="space-y-8">
+      {/* En-tête de la page */}
       <header>
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">
-            {searchQuery ? 'Search Results' : 'Discover'}
-          </h1>
-          <form onSubmit={handleSearch} className="relative w-72">
-            <Search className={cn(
-              "absolute left-2 top-2.5 h-4 w-4",
-              isSearching ? "animate-spin" : "text-muted-foreground"
-            )} />
+        <h1 className="text-3xl font-bold">Discover</h1>
+          <div className="relative w-72">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search movies & TV shows..."
+              placeholder="Search..."
               className="pl-8"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Button 
-              type="submit" 
-              variant="ghost" 
-              size="sm"
-              className="absolute right-0 top-0 h-full"
-            >
-              Search
-            </Button>
-          </form>
+          </div>
         </div>
       </header>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      {/* Contenu */}
+      <Suspense fallback={<div>Chargement...</div>}>
         {discoverData && (
           <div className="space-y-12">
-            {/* Message si aucun résultat */}
-            {searchQuery && 
-             discoverData.movies.length === 0 && 
-             discoverData.shows.length === 0 && (
-              <div className="text-center text-muted-foreground">
-                No results found for "{searchQuery}"
-              </div>
-            )}
-
-            {/* Résultats */}
-            {discoverData.movies.length > 0 && (
-              <MediaCarousel 
-                title={searchQuery ? "Movies Results" : "Movies"} 
-                items={discoverData.movies} 
-                scrollRef={movieScrollRef}
-                onItemClick={(item) => setSelectedMovie(item as Movie)}
-              />
-            )}
-            {discoverData.shows.length > 0 && (
-              <MediaCarousel 
-                title={searchQuery ? "TV Shows Results" : "TV Shows"}
-                items={discoverData.shows}
-                scrollRef={tvShowScrollRef}
-                onItemClick={(item) => setSelectedShow(item as TVShow)}
-              />
-            )}
+            <MediaCarousel 
+              title="Movies" 
+              items={discoverData.movies} 
+              scrollRef={movieScrollRef}
+              isMovie={true}
+            />
+            <MediaCarousel 
+              title="TV Shows" 
+              items={discoverData.shows}
+              scrollRef={tvShowScrollRef}
+              isMovie={false}
+            />
           </div>
         )}
       </Suspense>
-
-      {/* Dialogs */}
-      <MediaDialog
-        isOpen={!!selectedMovie}
-        onOpenChange={(open) => !open && setSelectedMovie(null)}
-        media={selectedMovie}
-        isMovie={true}
-      />
-      <MediaDialog
-        isOpen={!!selectedShow}
-        onOpenChange={(open) => !open && setSelectedShow(null)}
-        media={selectedShow}
-        isMovie={false}
-      />
     </div>
-  )
+  );
 }
