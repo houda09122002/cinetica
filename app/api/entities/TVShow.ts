@@ -12,7 +12,7 @@ export interface TVShow {
     popularity: number;              // Popularity score
     vote_average: number;            // Average user rating
     vote_count: number;              // Total number of votes
-    adult?: boolean;                 // Indicates if the show is for adults (optional)
+    adult?: boolean;                // Indicates if the show is for adults (optional)
 }
 
 // get https://api.themoviedb.org/3/discover/tv?api_key=742fea0be56f5a559bff7d8a8b8678c9&include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc
