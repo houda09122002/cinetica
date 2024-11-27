@@ -80,7 +80,7 @@ export function MediaDialog({ isOpen, onOpenChange, media, isMovie = true }: Med
             </h2>
 
             <div className="flex flex-wrap gap-2 mt-3">
-              {media.genre_ids.map((genreId) => (
+              {media.genre_ids?.map((genreId) => ( // Vérifiez si `genre_ids` existe
                 <Badge 
                   key={genreId} 
                   variant="outline"
@@ -88,7 +88,7 @@ export function MediaDialog({ isOpen, onOpenChange, media, isMovie = true }: Med
                 >
                   {getGenreName(genreId)}
                 </Badge>
-              ))}
+              )) || <span className="text-white/60">Genres not available</span>}
             </div>
           </div>
         </DialogHeader>
