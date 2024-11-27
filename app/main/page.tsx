@@ -21,11 +21,12 @@ interface DiscoverData {
   shows: TVShow[];
 }
 
-const formatDate = (date: string | null | undefined, isMovie: boolean) => {
+const formatDate = (date: string | null | undefined) => {
   if (!date) return "Date inconnue"
   try {
     return format(new Date(date), 'dd/MM/yyyy', { locale: fr })
   } catch (error) {
+    console.error('Search error:', error)
     return "Date invalide"
   }
 }
@@ -147,7 +148,6 @@ export default function MainPage() {
                           isMovie ? 
                             (item as Movie).release_date : 
                             (item as TVShow).first_air_date,
-                          isMovie
                         )}
                       </span>
                       <Badge variant="secondary">
@@ -211,7 +211,7 @@ export default function MainPage() {
              discoverData.movies.length === 0 && 
              discoverData.shows.length === 0 && (
               <div className="text-center text-muted-foreground">
-                No results found for "{searchQuery}"
+                No results found
               </div>
             )}
 
