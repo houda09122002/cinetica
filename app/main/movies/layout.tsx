@@ -7,10 +7,6 @@ export default function MoviesLayout({
 }: {
   children: React.ReactNode
 }) {
-  const pathname = usePathname()
-
-
-
   return (
     <div>
       {children}
