@@ -13,10 +13,14 @@ import {
   ChevronRight,
   LogOut,
   Trophy,
-  TrendingUp
+  TrendingUp,
+  Moon,
+  Sun
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { Switch } from "@/components/ui/switch"
+import { useTheme } from "next-themes"
 
 export default function MainLayout({
   children,
@@ -25,21 +29,28 @@ export default function MainLayout({
 }) {
   const router = useRouter()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  // Handler pour la déconnexion
+  // Éviter l'hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const handleLogout = () => {
-    // Ici vous pouvez ajouter la logique de déconnexion (supprimer le token, etc.)
-    router.push("/") // Redirige vers la page d'accueil
+    router.push("/")
+  }
+
+  if (!mounted) {
+    return null
   }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sidebar */}
       <aside className={cn(
         "fixed left-0 top-0 h-full bg-card border-r transition-all duration-300 flex flex-col",
         isCollapsed ? "w-16" : "w-64"
       )}>
-        {/* Bouton pour réduire/agrandir */}
         <Button
           variant="ghost"
           size="icon"
@@ -156,12 +167,34 @@ export default function MainLayout({
           </nav>
         </div>
 
-        {/* Footer avec bouton de déconnexion */}
-        <div className="p-6 border-t">
+        {/* Footer avec mode sombre et déconnexion */}
+        <div className="p-6 border-t space-y-4">
+          {/* Dark Mode Toggle */}
+          <div className={cn(
+            "flex items-center gap-2",
+            isCollapsed ? "justify-center" : "justify-between"
+          )}>
+            {!isCollapsed && <span className="text-sm">Dark Mode</span>}
+            <div className="flex items-center gap-2">
+              {theme === "dark" ? (
+                <Moon className="h-4 w-4" />
+              ) : (
+                <Sun className="h-4 w-4" />
+              )}
+              {!isCollapsed && (
+                <Switch
+                  checked={theme === "dark"}
+                  onCheckedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Logout Button */}
           <Button 
             variant="ghost" 
             className={cn(
-              "w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-100",
+              "w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/20",
               isCollapsed && "px-2"
             )}
             onClick={handleLogout}
@@ -172,7 +205,6 @@ export default function MainLayout({
         </div>
       </aside>
 
-      {/* Contenu principal */}
       <main className={cn(
         "transition-all duration-300",
         isCollapsed ? "ml-16" : "ml-64"
@@ -182,5 +214,5 @@ export default function MainLayout({
         </div>
       </main>
     </div>
-  );
+  )
 }
