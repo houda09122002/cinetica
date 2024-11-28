@@ -5,6 +5,13 @@ import { Session } from "next-auth"; // Typage pour la session
 import { users } from "@/repository/user"; // Chemin vers les utilisateurs simulés
 import bcrypt from "bcrypt";
 
+// Définir un type pour l'utilisateur
+interface User {
+  id: string;
+  name: string;
+  apiKey: string;
+}
+
 const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -14,7 +21,7 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
 
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         console.log("Tentative d'authentification avec :", credentials);
 
         if (!credentials || !credentials.username || !credentials.password) {
@@ -66,7 +73,7 @@ const authOptions: NextAuthOptions = {
     error: "/login", // Désactiver la redirection en cas d'erreur
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: any }) {
+    async jwt({ token, user }: { token: JWT; user?: User }) {
       console.log("JWT callback - Avant enrichissement :", token, user);
       if (user) {
         token.id = user.id;
