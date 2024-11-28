@@ -1,8 +1,11 @@
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt"; // Typage pour le token
+import { Session } from "next-auth"; // Typage pour la session
 import { users } from "@/repository/user"; // Chemin vers les utilisateurs simulés
 import bcrypt from "bcrypt";
 
-const authOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -63,7 +66,7 @@ const authOptions = {
     error: "/login", // Désactiver la redirection en cas d'erreur
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: any }) {
       console.log("JWT callback - Avant enrichissement :", token, user);
       if (user) {
         token.id = user.id;
@@ -72,10 +75,13 @@ const authOptions = {
       console.log("JWT callback - Après enrichissement :", token);
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       console.log("Session callback - Avant enrichissement :", session);
-      session.user.id = token.id;
-      session.user.apiKey = token.apiKey; // Ajouter la clé API TMDB à la session
+      session.user = {
+        ...session.user,
+        id: token.id,
+        apiKey: token.apiKey, // Ajouter la clé API TMDB à la session
+      };
       console.log("Session callback - Après enrichissement :", session);
       return session;
     },
