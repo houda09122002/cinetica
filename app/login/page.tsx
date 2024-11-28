@@ -13,7 +13,7 @@ export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [isLogged, setIsLogged] = useState(false); 
+    const [isLogged] = useState(false); 
 
     const handleLogin = async () => {
       setError(''); // Réinitialiser l'erreur
@@ -50,7 +50,7 @@ export default function LoginPage() {
       );
       {{ 
         // Ajouter une redirection conditionnelle vers '/main' au lieu de '/api/auth/error'
-        router.push('//dashboard');
+        router.push('/dashboard');
       }}
       
     }

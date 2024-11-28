@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession(); // On déstructure uniquement `status` car `session` n'est pas utilisé
   const router = useRouter();
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { users } from "@/repository/user"; // Chemin vers les utilisateurs simulés
 import bcrypt from "bcrypt";
