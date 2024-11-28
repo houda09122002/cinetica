@@ -79,7 +79,7 @@ export default function MainLayout({
               <Button variant="ghost" className={cn(
                 "w-full justify-start gap-2",
                 isCollapsed && "px-2"
-              )} onClick={() => router.push('/main')}>
+              )} onClick={() => router.push('/dashboard')}>
                 <Compass className="w-4 h-4 shrink-0" />
                 {!isCollapsed && <span>Discover</span>}
               </Button>
@@ -95,7 +95,7 @@ export default function MainLayout({
                     "w-full justify-start gap-2",
                     isCollapsed && "px-2"
                   )}
-                  onClick={() => router.push('/main/movies/now-playing')}
+                  onClick={() => router.push('/dashboard/movies/now-playing')}
                 >
                   <Film className="w-4 h-4" />
                   {!isCollapsed && <span>Now Playing</span>}
@@ -106,7 +106,7 @@ export default function MainLayout({
                     "w-full justify-start gap-2",
                     isCollapsed && "px-2"
                   )}
-                  onClick={() => router.push('/main/movies/popular')}
+                  onClick={() => router.push('/dashboard/movies/popular')}
                 >
                   <TrendingUp className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>Popular</span>}
@@ -117,7 +117,7 @@ export default function MainLayout({
                     "w-full justify-start gap-2",
                     isCollapsed && "px-2"
                   )}
-                  onClick={() => router.push('/main/movies/top-rated')}
+                  onClick={() => router.push('/dashboard/movies/top-rated')}
                 >
                   <Trophy className="w-4 h-4" />
                   {!isCollapsed && <span>Top Rated</span>}
@@ -135,7 +135,7 @@ export default function MainLayout({
                     "w-full justify-start gap-2",
                     isCollapsed && "px-2"
                   )}
-                  onClick={() => router.push('/main/shows/on-the-air')}
+                  onClick={() => router.push('/dashboard/shows/on-the-air')}
                 >
                   <Tv className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>On the air</span>}
@@ -146,7 +146,7 @@ export default function MainLayout({
                     "w-full justify-start gap-2",
                     isCollapsed && "px-2"
                   )}
-                  onClick={() => router.push('/main/shows/popular')}
+                  onClick={() => router.push('/dashboard/shows/popular')}
                 >
                   <Users className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>Popular</span>}
@@ -157,7 +157,7 @@ export default function MainLayout({
                     "w-full justify-start gap-2",
                     isCollapsed && "px-2"
                   )}
-                  onClick={() => router.push('/main/shows/top-rated')}
+                  onClick={() => router.push('/dashboard/shows/top-rated')}
                 >
                   <Star className="w-4 h-4 shrink-0" />
                   {!isCollapsed && <span>Top Rated</span>}
