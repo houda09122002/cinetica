@@ -30,7 +30,9 @@ const authOptions: NextAuthOptions = {
         }
 
         // Recherche de l'utilisateur dans la base simulée
-        const foundUser = users.find(user => user.username === credentials.username);
+        const foundUser = users.find(
+          (user) => user.username === credentials.username
+        );
         console.log("Utilisateur trouvé :", foundUser);
 
         if (!foundUser) {
@@ -49,8 +51,14 @@ const authOptions: NextAuthOptions = {
         console.log("Hash à comparer (après conversion) :", hashToCompare);
 
         // Vérification du mot de passe
-        const isPasswordValid = await bcrypt.compare(credentials.password, hashToCompare);
-        console.log("Résultat de la vérification du mot de passe :", isPasswordValid);
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          hashToCompare
+        );
+        console.log(
+          "Résultat de la vérification du mot de passe :",
+          isPasswordValid
+        );
 
         if (isPasswordValid) {
           console.log("Authentification réussie pour :", foundUser.username);
@@ -78,19 +86,34 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.apiKey = user.apiKey; // Ajouter la clé API TMDB au token
+      } else {
+        // Supprimer les données utilisateur si la session est détruite
+        token.id = null;
+        token.apiKey = null;
       }
       console.log("JWT callback - Après enrichissement :", token);
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       console.log("Session callback - Avant enrichissement :", session);
-      session.user = {
-        ...session.user,
-        id: token.id,
-        apiKey: token.apiKey, // Ajouter la clé API TMDB à la session
-      };
+      if (token.id) {
+        session.user = {
+          ...session.user,
+          id: token.id,
+          apiKey: token.apiKey, // Ajouter la clé API TMDB à la session
+        };
+      } else {
+        // Supprimer les données utilisateur si la session est détruite
+        session.user = null;
+      }
       console.log("Session callback - Après enrichissement :", session);
       return session;
+    },
+  },
+  events: {
+    async signOut({ session }) {
+      // Logique à exécuter lors de la déconnexion
+      console.log("Déconnexion réussie pour :", session?.user?.name);
     },
   },
   secret: process.env.NEXTAUTH_SECRET || "secret", // Assure-toi de définir NEXTAUTH_SECRET dans un fichier .env

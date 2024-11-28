@@ -21,6 +21,11 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Switch } from "@/components/ui/switch"
 import { useTheme } from "next-themes"
+import { signOut } from "next-auth/react";
+
+const handleLogout = async () => {
+  await signOut({ callbackUrl: "/login" });
+};
 
 export default function MainLayout({
   children,
@@ -191,17 +196,18 @@ export default function MainLayout({
           </div>
 
           {/* Logout Button */}
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className={cn(
               "w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/20",
               isCollapsed && "px-2"
             )}
-            onClick={handleLogout}
+            onClick={handleLogout} // Appelle la méthode de déconnexion
           >
             <LogOut className="w-4 h-4 shrink-0" />
             {!isCollapsed && <span>Déconnexion</span>}
           </Button>
+
         </div>
       </aside>
 
