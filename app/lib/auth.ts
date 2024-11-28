@@ -60,7 +60,7 @@ const authOptions = {
   ],
   pages: {
     signIn: "/login", // Page de connexion
-    error: null, // Désactiver la redirection en cas d'erreur
+    error: "/login", // Désactiver la redirection en cas d'erreur
   },
   callbacks: {
     async jwt({ token, user }) {
