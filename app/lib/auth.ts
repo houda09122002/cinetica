@@ -29,10 +29,10 @@ const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Recherche de l'utilisateur dans la base simulée
         const foundUser = users.find(
           (user) => user.username === credentials.username
         );
+
         console.log("Utilisateur trouvé :", foundUser);
 
         if (!foundUser) {
@@ -40,21 +40,15 @@ const authOptions: NextAuthOptions = {
           return null;
         }
 
-        console.log("Mot de passe saisi :", credentials.password);
-        console.log("Mot de passe hashé dans la base :", foundUser.password);
-
-        // Convertir `$2y$` en `$2b$` si nécessaire
         const hashToCompare = foundUser.password.startsWith("$2y$")
           ? foundUser.password.replace("$2y$", "$2b$")
           : foundUser.password;
 
-        console.log("Hash à comparer (après conversion) :", hashToCompare);
-
-        // Vérification du mot de passe
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           hashToCompare
         );
+
         console.log(
           "Résultat de la vérification du mot de passe :",
           isPasswordValid
@@ -63,11 +57,10 @@ const authOptions: NextAuthOptions = {
         if (isPasswordValid) {
           console.log("Authentification réussie pour :", foundUser.username);
 
-          // Renvoyer la clé API TMDB (depuis un fichier .env ou une autre source)
           return {
             id: foundUser.id.toString(),
             name: foundUser.username,
-            apiKey: process.env.TMDB_API_KEY || foundUser.apiKey, // Clé API TMDB
+            apiKey: process.env.TMDB_API_KEY || foundUser.apiKey,
           };
         } else {
           console.error("Mot de passe incorrect pour :", foundUser.username);
@@ -77,46 +70,48 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/login", // Page de connexion
-    error: "/login", // Désactiver la redirection en cas d'erreur
+    signIn: "/login",
+    error: "/login",
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User }) {
       console.log("JWT callback - Avant enrichissement :", token, user);
+
       if (user) {
         token.id = user.id;
-        token.apiKey = user.apiKey; // Ajouter la clé API TMDB au token
+        token.apiKey = user.apiKey;
       } else {
-        // Supprimer les données utilisateur si la session est détruite
+        // Réinitialiser les données utilisateur après la déconnexion
         token.id = null;
         token.apiKey = null;
       }
+
       console.log("JWT callback - Après enrichissement :", token);
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       console.log("Session callback - Avant enrichissement :", session);
+
       if (token.id) {
         session.user = {
           ...session.user,
           id: token.id,
-          apiKey: token.apiKey, // Ajouter la clé API TMDB à la session
+          apiKey: token.apiKey,
         };
       } else {
-        // Supprimer les données utilisateur si la session est détruite
-        session.user = null;
+        session.user = null; // Réinitialiser la session
       }
+
       console.log("Session callback - Après enrichissement :", session);
       return session;
     },
   },
   events: {
     async signOut({ session }) {
-      // Logique à exécuter lors de la déconnexion
       console.log("Déconnexion réussie pour :", session?.user?.name);
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "secret", // Assure-toi de définir NEXTAUTH_SECRET dans un fichier .env
+  secret: process.env.NEXTAUTH_SECRET || "secret", // Vérifiez que cette variable est bien définie
 };
 
 export default authOptions;
