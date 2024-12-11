@@ -1,49 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { useLogin } from "../hooks/useLogin";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
-    }
-  }, [status, router]);
-
-  const handleLogin = async () => {
-    setError(""); // Réinitialiser l'erreur
-
-    const result = await signIn("credentials", {
-      redirect: false, // Empêche les redirections automatiques
-      username,
-      password,
-    });
-
-    console.log("Résultat de signIn :", result);
-
-    if (result?.error) {
-      setError("Erreur : " + result.error);
-    } else if (result?.ok) {
-      router.push("/dashboard");
-    } else {
-      setError("Une erreur inattendue est survenue.");
-    }
-  };
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    error,
+    isLoading,
+    handleLogin,
+  } = useLogin();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
       <div className="flex w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
+        {/* Section de connexion */}
         <div className="w-full md:w-1/2 p-8 flex flex-col justify-center bg-black text-white">
           <h1 className="text-4xl font-bold mb-2">Welcome to</h1>
           <h2 className="text-6xl font-bold text-purple-500 mb-8">Cinetica</h2>
@@ -65,14 +42,16 @@ export default function LoginPage() {
             />
             <Button
               onClick={handleLogin}
+              disabled={isLoading}
               className="w-full bg-purple-500 hover:bg-purple-600 text-white"
             >
-              Login
+              {isLoading ? "Loading..." : "Login"}
             </Button>
             {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
           </Card>
         </div>
 
+        {/* Section image */}
         <div className="hidden md:flex w-1/2 bg-white items-center justify-center">
           <Image
             src="/clapperboard.jpeg"

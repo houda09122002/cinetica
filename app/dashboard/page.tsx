@@ -1,225 +1,126 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { Suspense, useRef, useState, useEffect } from "react";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import type { Movie } from "../api/entities/movie";
-import type { TVShow } from "../api/entities/TVShow";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { useState, useEffect, ReactNode } from "react";
+import { useDiscover } from "../../app/hooks/useDiscover";
+import { useThemeToggle } from "../../app/hooks/useThemeToggle";
+import { useSearch } from "../../app/hooks/useSearch";
+import Sidebar from "@/components/layout/Sidebar";
+import { MediaCarousel } from "@/components/ui/media-carousel";
 import { MediaDialog } from "@/components/ui/media-dialog";
-import { cn } from "@/lib/utils";
-
-interface DiscoverData {
-  movies: Movie[];
-  shows: TVShow[];
-}
-
-const formatDate = (date: string | null | undefined) => {
-  if (!date) return "Date inconnue";
-  try {
-    return format(new Date(date), "dd/MM/yyyy", { locale: fr });
-  } catch (error) {
-    console.error("Search error:", error);
-    return "Date invalide";
-  }
-};
-
+import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { useRouter } from "next/navigation"; // Pour la navigation
+import { Moon, Sun } from "lucide-react";
+import { useRef } from "react";
 export default function MainPage() {
-  const [discoverData, setDiscoverData] = useState<DiscoverData | null>(null);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [selectedShow, setSelectedShow] = useState<TVShow | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const { theme, toggleTheme, mounted } = useThemeToggle();
+  const { query, setQuery, handleSearch, isLoading } = useSearch();
+  const { discoverData } = useDiscover();
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const movieScrollRef = useRef<HTMLDivElement>(null);
   const tvShowScrollRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  useEffect(() => {
-    fetchDiscoverData();
-  }, []);
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) {
-      fetchDiscoverData();
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const response = await fetch(`/api/search?query=${encodeURIComponent(searchQuery)}`);
-      const data = await response.json();
-      if (data.movies && data.shows) {
-        setDiscoverData(data);
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const fetchDiscoverData = async () => {
-    try {
-      const response = await fetch("/api/discover");
-      const data = await response.json();
-      if (data.movies && data.shows) {
-        setDiscoverData(data);
-      }
-    } catch (error) {
-      console.error("Erreur:", error);
-    }
-  };
-
-  const scroll = (direction: "left" | "right", ref: React.RefObject<HTMLDivElement>) => {
-    if (ref.current) {
-      const scrollAmount = 300;
-      if (direction === "left") {
-        ref.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-      } else {
-        ref.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      }
-    }
-  };
-
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: "/login" });
-  };
-
-  const MediaCarousel = ({
-    title,
-    items,
-    scrollRef,
-    isMovie = true,
-    onItemClick,
-  }: {
-    title: string;
-    items: Movie[] | TVShow[];
-    scrollRef: React.RefObject<HTMLDivElement>;
-    isMovie?: boolean;
-    onItemClick: (item: Movie | TVShow) => void;
-  }) => {
-    if (!items || items.length === 0) {
-      return <div>Aucun contenu disponible</div>;
-    }
-
-    return (
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold">{title}</h2>
-        <div className="relative group">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => scroll("left", scrollRef)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-
-          <div ref={scrollRef} className="overflow-x-auto pb-4 scrollbar-hide">
-            <div className="flex gap-4 w-max">
-              {items.map((item) => (
-                <Card
-                  key={item.id}
-                  className="w-[300px] flex-shrink-0 overflow-hidden cursor-pointer transition-all hover:scale-105"
-                  onClick={() => onItemClick(item)}
-                >
-                  <div className="aspect-[2/3] relative">
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                      alt={isMovie ? (item as Movie).title : (item as TVShow).name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-lg">
-                      {isMovie ? (item as Movie).title : (item as TVShow).name}
-                    </CardTitle>
-                    <CardDescription className="flex items-center justify-between">
-                      <span>
-                        {formatDate(
-                          isMovie ? (item as Movie).release_date : (item as TVShow).first_air_date
-                        )}
-                      </span>
-                      <Badge variant="secondary">{item.vote_average.toFixed(1)} ★</Badge>
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => scroll("right", scrollRef)}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    );
-  };
+  // Assurez-vous que le rendu se fait côté client
+  if (!mounted) return null;
 
   return (
-    <div className="space-y-8">
-      <header>
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">{searchQuery ? "Search Results" : "Discover"}</h1>
-          <Button variant="outline" onClick={handleLogout}>
-            Déconnexion
-          </Button>
-        </div>
-      </header>
+    <div className={`flex min-h-screen ${theme === "dark" ? "dark" : ""}`}>
+      {/* Sidebar */}
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
 
-      <Suspense fallback={<div>Loading...</div>}>
-        {discoverData && (
-          <div className="space-y-12">
-            {searchQuery && discoverData.movies.length === 0 && discoverData.shows.length === 0 && (
-              <div className="text-center text-muted-foreground">No results found</div>
-            )}
+      {/* Main Content */}
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarCollapsed ? "ml-16" : "ml-64"
+        }`}
+      >
+        {/* Header */}
+        <header className="p-4 border-b flex items-center justify-between">
+          <h1 className="text-xl font-bold">Discover</h1>
 
-            {discoverData.movies.length > 0 && (
-              <MediaCarousel
-                title={searchQuery ? "Movies Results" : "Movies"}
-                items={discoverData.movies}
-                scrollRef={movieScrollRef}
-                isMovie={true}
-                onItemClick={(item) => setSelectedMovie(item as Movie)}
-              />
-            )}
-            {discoverData.shows.length > 0 && (
-              <MediaCarousel
-                title={searchQuery ? "TV Shows Results" : "TV Shows"}
-                items={discoverData.shows}
-                scrollRef={tvShowScrollRef}
-                isMovie={false}
-                onItemClick={(item) => setSelectedShow(item as TVShow)}
-              />
+          {/* SearchBar */}
+          <form
+            className="flex items-center gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch(query);
+            }}
+          >
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search..."
+              className="px-4 py-2 rounded-lg w-48"
+            />
+            <Button
+              type="submit"
+              variant="ghost"
+              size="icon"
+              className={isLoading ? "animate-spin" : ""}
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+          </form>
+
+          {/* Dark Mode Switch */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm">Dark Mode</span>
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+              className="bg-gray-500"
+            />
+            {theme === "dark" ? (
+              <Moon className="h-5 w-5 text-gray-500" />
+            ) : (
+              <Sun className="h-5 w-5 text-yellow-500" />
             )}
           </div>
-        )}
-      </Suspense>
+        </header>
 
-      <MediaDialog
-        isOpen={!!selectedMovie}
-        onOpenChange={(open) => !open && setSelectedMovie(null)}
-        media={selectedMovie}
-        isMovie={true}
-      />
-      <MediaDialog
-        isOpen={!!selectedShow}
-        onOpenChange={(open) => !open && setSelectedShow(null)}
-        media={selectedShow}
-        isMovie={false}
-      />
+        {/* Main Content (Media Carousel) */}
+        <main className="p-8">
+          {discoverData && (
+            <div className="space-y-12">
+              {/* Movies Carousel */}
+              {discoverData.movies.length > 0 && (
+                <MediaCarousel
+                  title="Movies"
+                  items={discoverData.movies}
+                  scrollRef={movieScrollRef}
+                  onItemClick={(item) => setSelectedMedia(item)}
+                  isMovie={true}
+                />
+              )}
+              {/* TV Shows Carousel */}
+              {discoverData.shows.length > 0 && (
+                <MediaCarousel
+                  title="TV Shows"
+                  items={discoverData.shows}
+                  scrollRef={tvShowScrollRef}
+                  onItemClick={(item) => setSelectedMedia(item)}
+                  isMovie={false}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Media Dialog */}
+          <MediaDialog
+            isOpen={!!selectedMedia}
+            onOpenChange={(open) => !open && setSelectedMedia(null)}
+            media={selectedMedia}
+            isMovie={!!selectedMedia?.title}
+          />
+        </main>
+      </div>
     </div>
   );
 }
