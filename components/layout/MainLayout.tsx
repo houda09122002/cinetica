@@ -6,13 +6,12 @@ import { useThemeToggle } from "../../app/hooks/useThemeToggle";
 import { Search } from "lucide-react";
 import { useSearch } from "../../app/hooks/useSearch";
 import { Button } from "../../components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import Image from "next/image";
+import SearchResults from "../../components/layout/SearchResults";
+import { MediaDialog } from "../../components/ui/media-dialog";
 
 interface MainLayoutProps {
   children: ReactNode;
-  title: string; // Nouvelle prop pour le titre
+  title: string;
 }
 
 export default function MainLayout({ children, title }: MainLayoutProps) {
@@ -20,8 +19,11 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
   const { query, setQuery, handleSearch, isLoading, results } = useSearch();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  // État pour le média sélectionné
+  const [selectedMedia, setSelectedMedia] = useState<any | null>(null);
+  const [isMediaDialogOpen, setIsMediaDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   if (!mounted) return null;
-
   return (
     <div className={`min-h-screen ${theme === "dark" ? "dark" : ""}`}>
       {/* Sidebar */}
@@ -36,17 +38,14 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
           isSidebarCollapsed ? "ml-16" : "ml-64"
         }`}
       >
-        <header className="p-4 border-b flex items-center justify-between">
+        <header className="p-4 border-b flex items-center justify-between sticky top-0 z-10 bg-white dark:bg-black">
           {/* Titre dynamique */}
-          <h1 className="text-xl font-bold">{title}</h1>
+          <h1 className="text-2xl font-bold ml-4">{query ? "Search Results" : title}</h1>
 
           {/* SearchBar */}
           <form
             className="flex items-center gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch(query);
-            }}
+            onSubmit={(e) => e.preventDefault()}
           >
             <input
               type="text"
@@ -55,55 +54,29 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
               placeholder="Search..."
               className="px-4 py-2 rounded-lg w-48"
             />
-            <Button
-              type="submit"
-              variant="ghost"
-              size="icon"
-              className={isLoading ? "animate-spin" : ""}
-            >
+            <Button type="submit" variant="ghost" size="icon">
               <Search className="h-5 w-5" />
             </Button>
           </form>
         </header>
 
-        {/* Contenu principal */}
-        <main className="p-8">
-          {query && results.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {results.map((item: any) => (
-                <Card
-                  key={item.id}
-                  className="overflow-hidden cursor-pointer transition-all hover:scale-105"
-                >
-                  <div className="aspect-[2/3] relative">
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                      alt={item.title || item.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-lg">{item.title || item.name}</CardTitle>
-                    <CardDescription className="flex items-center justify-between">
-                      <span>
-                        {item.release_date || item.first_air_date || "Date inconnue"}
-                      </span>
-                      <Badge variant="secondary">
-                        {item.vote_average ? item.vote_average.toFixed(1) : "N/A"} ★
-                      </Badge>
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          ) : query && results.length === 0 ? (
-            <div className="text-center text-muted-foreground">No results found</div>
+          {/* Contenu principal */}
+          <main className="p-8">
+          {query ? (
+            <SearchResults query={query} onItemClick={setSelectedItem} />
           ) : (
             children
           )}
         </main>
       </div>
+
+      {/* Dialog pour afficher les détails du média */}
+      <MediaDialog
+        isOpen={isMediaDialogOpen}
+        onOpenChange={setIsMediaDialogOpen}
+        media={selectedMedia}
+        isMovie={!!selectedMedia?.title}
+      />
     </div>
   );
 }

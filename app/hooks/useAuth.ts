@@ -1,4 +1,3 @@
-// src/hooks/useAuth.ts
 import { signOut } from "next-auth/react";
 
 export const useAuth = () => {

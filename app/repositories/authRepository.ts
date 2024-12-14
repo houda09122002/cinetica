@@ -1,4 +1,3 @@
-// src/repositories/authRepository.ts
 import { signIn } from "next-auth/react";
 
 export const login = async (username: string, password: string) => {

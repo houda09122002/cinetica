@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "./useRouter"; // Import the custom hook
+import { useRouter } from "./useRouter";
 import { useSession } from "next-auth/react";
 import { login } from "../repositories/authRepository";
 
 export const useLogin = () => {
   const { data: session, status } = useSession();
-  const router = useRouter(); // Using the safe, client-only router hook
+  const router = useRouter(); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

@@ -29,11 +29,11 @@ export default function NowPlayingMoviesPage() {
     <MainLayout title="Now Playing Movies">
 
     <main className="p-8">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
         {movies.map((movie) => (
           <Card
             key={movie.id}
-            className="overflow-hidden cursor-pointer transition-all hover:scale-105"
+            className="overflow-hidden cursor-pointer transition-all hover:scale-90"
             onClick={() => setSelectedMovie(movie)}
           >
             <div className="aspect-[2/3] relative">

@@ -1,17 +1,81 @@
-import { useState } from "react";
+"use client";
 
-export default function SearchResults({ results }: { results: any[] }) {
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { Card, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+
+interface SearchResultsProps {
+  query: string;
+  onItemClick: (item: any) => void; // Prop pour cliquer sur un élément
+}
+
+export default function SearchResults({ query, onItemClick }: SearchResultsProps) {
+  const [results, setResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        setResults(data.movies.concat(data.shows)); // Combine les résultats de films et séries
+      } catch (error) {
+        console.error("Search error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const delayDebounce = setTimeout(() => {
+      fetchData();
+    }, 500); // Ajout d'un délai pour la saisie dynamique
+
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+
+  if (isLoading) {
+    return <div className="text-center text-muted-foreground">Loading...</div>;
+  }
+
   if (results.length === 0) {
-    return <div className="text-center">No results found</div>;
+    return <div className="text-center text-muted-foreground">No results found</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {results.map((result) => (
-        <div key={result.id} className="p-4 border rounded">
-          <h3>{result.title || result.name}</h3>
-          <p>{result.overview}</p>
-        </div>
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+      {results.map((item) => (
+        <Card
+          key={item.id}
+          className="overflow-hidden cursor-pointer transition-all hover:scale-90"
+          onClick={() => onItemClick(item)}
+        >
+          <div className="aspect-[2/3] relative">
+            <Image
+              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+              alt={item.title || item.name}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <CardHeader className="p-4">
+            <CardTitle className="text-lg">{item.title || item.name}</CardTitle>
+            <CardDescription className="flex items-center justify-between">
+              <span>
+                {item.release_date || item.first_air_date || "Date inconnue"}
+              </span>
+              <Badge variant="secondary">
+                {item.vote_average ? item.vote_average.toFixed(1) : "N/A"} ★
+              </Badge>
+            </CardDescription>
+          </CardHeader>
+        </Card>
       ))}
     </div>
   );

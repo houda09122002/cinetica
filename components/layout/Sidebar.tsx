@@ -32,7 +32,17 @@ export default function Sidebar({
 }) {
   const { handleLogout } = useAuth();
   const router = useRouter();
-  const { theme, toggleTheme } = useThemeToggle();
+  const { theme, toggleTheme, setTheme } = useThemeToggle();
+
+  const handleLogoutAndSwitchTheme = () => {
+    // Basculer en mode clair avant de se déconnecter
+    if (theme === "dark") {
+      setTheme("light");
+    }
+
+    // Effectuer la déconnexion
+    handleLogout();
+  };
 
   return (
     <aside
@@ -149,7 +159,7 @@ export default function Sidebar({
             "w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/20",
             isCollapsed && "px-2"
           )}
-          onClick={handleLogout}
+          onClick={handleLogoutAndSwitchTheme}
         >
           <LogOut className="w-4 h-4 shrink-0" />
           {!isCollapsed && <span>Déconnexion</span>}
