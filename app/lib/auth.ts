@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt"; // Typage pour le token
 import { Session } from "next-auth"; // Typage pour la session
-import { users } from "@/repository/user"; // Chemin vers les utilisateurs simulés
+import { users } from "../../repository/user"; // Chemin vers les utilisateurs simulés
 import bcrypt from "bcrypt";
 
 // Définir un type pour l'utilisateur
