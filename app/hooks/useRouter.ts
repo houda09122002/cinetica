@@ -1,5 +1,4 @@
 import { useRouter as useNextRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export function useRouter() {
   if (typeof window === "undefined") {

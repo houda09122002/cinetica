@@ -6,6 +6,9 @@ import { useThemeToggle } from "../../app/hooks/useThemeToggle";
 import { Search } from "lucide-react";
 import { useSearch } from "../../app/hooks/useSearch";
 import { Button } from "../../components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import Image from "next/image";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -13,8 +16,8 @@ interface MainLayoutProps {
 }
 
 export default function MainLayout({ children, title }: MainLayoutProps) {
-  const { theme, toggleTheme, mounted } = useThemeToggle();
-  const { query, setQuery, handleSearch, isLoading } = useSearch();
+  const { theme, mounted } = useThemeToggle();
+  const { query, setQuery, handleSearch, isLoading, results } = useSearch();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   if (!mounted) return null;
@@ -64,7 +67,42 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
         </header>
 
         {/* Contenu principal */}
-        <main className="p-8">{children}</main>
+        <main className="p-8">
+          {query && results.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {results.map((item: any) => (
+                <Card
+                  key={item.id}
+                  className="overflow-hidden cursor-pointer transition-all hover:scale-105"
+                >
+                  <div className="aspect-[2/3] relative">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                      alt={item.title || item.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-lg">{item.title || item.name}</CardTitle>
+                    <CardDescription className="flex items-center justify-between">
+                      <span>
+                        {item.release_date || item.first_air_date || "Date inconnue"}
+                      </span>
+                      <Badge variant="secondary">
+                        {item.vote_average ? item.vote_average.toFixed(1) : "N/A"} ★
+                      </Badge>
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          ) : query && results.length === 0 ? (
+            <div className="text-center text-muted-foreground">No results found</div>
+          ) : (
+            children
+          )}
+        </main>
       </div>
     </div>
   );
