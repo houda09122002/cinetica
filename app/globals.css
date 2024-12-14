@@ -7,19 +7,24 @@ body {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .carousel-container {
+    @apply overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide;
   }
-
+  .carousel {
+    @apply flex gap-4 w-max;
+  }
+  .carousel-item {
+    @apply flex-none w-[300px];
+  }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 }
+
 
 @layer base {
   :root {
@@ -94,10 +99,9 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  
+  *{@apply border-border box-border;}
+  body {@apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;}
   }
-  body {
-    @apply bg-background text-foreground;
-  }
-}

@@ -1,36 +1,51 @@
-// src/hooks/usePopularShows.ts
-import { useQuery } from "@tanstack/react-query";
-import { fetchPopularShows, searchTVShows } from "../repositories/tvShowRepository";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchPopularShows, searchShows } from "../../app/repositories/tvShowRepository";
 
 export const usePopularShows = () => {
+  const [shows, setShows] = useState([]);
+  const [originalShows, setOriginalShows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredShows, setFilteredShows] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data: shows = [], isLoading, isError } = useQuery(
-    ["popularShows"],
-    fetchPopularShows,
-    {
-      onSuccess: (data) => setFilteredShows(data),
+  useEffect(() => {
+    loadPopularShows();
+  }, []);
+
+  const loadPopularShows = async () => {
+    setIsLoading(true);
+    try {
+      const popularShows = await fetchPopularShows();
+      setShows(popularShows);
+      setOriginalShows(popularShows);
+    } catch (error) {
+      console.error("Error loading popular shows:", error);
+    } finally {
+      setIsLoading(false);
     }
-  );
+  };
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setFilteredShows(shows); // Réinitialise aux données originales
-    } else {
-      const results = await searchTVShows(query);
-      setFilteredShows(results);
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setShows(originalShows);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const searchResults = await searchShows(searchQuery);
+      setShows(searchResults);
+    } catch (error) {
+      console.error("Error searching shows:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
-    shows: filteredShows,
-    isLoading,
-    isError,
+    shows,
     searchQuery,
     setSearchQuery,
     handleSearch,
+    isLoading,
   };
 };

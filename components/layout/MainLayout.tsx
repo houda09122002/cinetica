@@ -1,20 +1,26 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import Sidebar from "@/components/layout/Sidebar";
+import Sidebar from "../../components/layout/Sidebar";
 import { useThemeToggle } from "../../app/hooks/useThemeToggle";
-import {Search } from "lucide-react";
-import { Switch } from "@/components/ui/switch"; 
-import { useSearch } from "../../app/hooks/useSearch"; 
-import { Button } from "@/components/ui/button"; 
-export default function MainLayout({ children }: { children: ReactNode }) {
+import { Search } from "lucide-react";
+import { useSearch } from "../../app/hooks/useSearch";
+import { Button } from "../../components/ui/button";
+
+interface MainLayoutProps {
+  children: ReactNode;
+  title: string; // Nouvelle prop pour le titre
+}
+
+export default function MainLayout({ children, title }: MainLayoutProps) {
   const { theme, toggleTheme, mounted } = useThemeToggle();
   const { query, setQuery, handleSearch, isLoading } = useSearch();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   if (!mounted) return null;
 
   return (
-    <div className={`flex min-h-screen ${theme === "dark" ? "dark" : ""}`}>
+    <div className={`min-h-screen ${theme === "dark" ? "dark" : ""}`}>
       {/* Sidebar */}
       <Sidebar
         isCollapsed={isSidebarCollapsed}
@@ -28,8 +34,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         }`}
       >
         <header className="p-4 border-b flex items-center justify-between">
-          {/* Titre */}
-          <h1 className="text-xl font-bold">Discover</h1>
+          {/* Titre dynamique */}
+          <h1 className="text-xl font-bold">{title}</h1>
 
           {/* SearchBar */}
           <form
@@ -55,7 +61,6 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               <Search className="h-5 w-5" />
             </Button>
           </form>
-
         </header>
 
         {/* Contenu principal */}

@@ -1,9 +1,9 @@
 "use client";
 
 import { useLogin } from "../hooks/useLogin";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Card } from "../../components/ui/card";
 import Image from "next/image";
 
 export default function LoginPage() {

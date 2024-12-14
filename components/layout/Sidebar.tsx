@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   Clapperboard,
   Compass,
@@ -16,12 +16,12 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import { useAuth } from "../../app/hooks/useAuth";
 import MenuItem from "./MenuItem";
 import { useRouter } from "next/navigation";
-import { useThemeToggle } from "../../app/hooks/useThemeToggle"; // Import du hook pour le mode sombre
-import { Switch } from "@/components/ui/switch"; // Import du Switch de ShadCN
+import { useThemeToggle } from "../../app/hooks/useThemeToggle"; 
+import { Switch } from "../../components/ui/switch"; 
 
 export default function Sidebar({
   isCollapsed,

@@ -1,7 +1,7 @@
 "use client"
 
-import { Movie } from "@/app/api/entities/movie"
-import { TVShow } from "@/app/api/entities/TVShow"
+import { Movie } from "../../app/api/entities/movie"
+import { TVShow } from "../../app/api/entities/TVShow"
 import { format } from "date-fns"
 import Image from "next/image"
 import { Badge } from "./badge"
@@ -9,9 +9,9 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-} from "@/components/ui/dialog"
+} from "../../components/ui/dialog"
 import { Dot } from "lucide-react"
-import { GENRES_MAP , TV_GENRES_MAP} from "@/app/constants/genres"
+import { GENRES_MAP , TV_GENRES_MAP} from "../../app/constants/genres"
 
 
 interface MediaDialogProps {

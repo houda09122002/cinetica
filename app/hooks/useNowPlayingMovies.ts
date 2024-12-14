@@ -1,36 +1,51 @@
-// src/hooks/useNowPlayingMovies.ts
-import { useQuery } from "@tanstack/react-query";
-import { fetchNowPlayingMovies, searchMovies } from "../repositories/movieRepository";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchNowPlayingMovies, searchMovies } from "../../app/repositories/movieRepository";
 
 export const useNowPlayingMovies = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [movies, setMovies] = useState([]);
   const [originalMovies, setOriginalMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data: movies = [], isLoading, isError, refetch } = useQuery(
-    ["nowPlayingMovies"],
-    fetchNowPlayingMovies,
-    {
-      onSuccess: (data) => setOriginalMovies(data),
+  useEffect(() => {
+    loadNowPlayingMovies();
+  }, []);
+
+  const loadNowPlayingMovies = async () => {
+    try {
+      setIsLoading(true);
+      const nowPlayingMovies = await fetchNowPlayingMovies();
+      setMovies(nowPlayingMovies);
+      setOriginalMovies(nowPlayingMovies);
+    } catch (error) {
+      console.error("Error loading now-playing movies:", error);
+    } finally {
+      setIsLoading(false);
     }
-  );
+  };
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      refetch(); // Recharge les données originales
-    } else {
-      const results = await searchMovies(query);
-      setOriginalMovies(results);
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setMovies(originalMovies);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const searchResults = await searchMovies(searchQuery);
+      setMovies(searchResults);
+    } catch (error) {
+      console.error("Error searching movies:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
-    movies: searchQuery ? originalMovies : movies,
-    isLoading,
-    isError,
+    movies,
     searchQuery,
     setSearchQuery,
     handleSearch,
+    isLoading,
   };
 };

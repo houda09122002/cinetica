@@ -1,21 +1,32 @@
-// src/repositories/tvShowRepository.ts
-import axiosClient from "@/app/api/axiosClient";
-
-export const fetchOnTheAirShows = async () => {
-  const response = await axiosClient.get("/shows/on-the-air");
-  return response.data.results || [];
-};
-export const fetchPopularShows = async () => {
-    const response = await axiosClient.get("/shows/popular");
-    return response.data.results || [];
-  };
-  export const fetchTopRatedShows = async () => {
-    const response = await axiosClient.get("/shows/top-rated");
-    return response.data.results || [];
-  };
-export const searchTVShows = async (query: string) => {
-  const response = await axiosClient.get(`/search`, {
-    params: { query },
-  });
-  return response.data.shows || [];
-};
+export async function fetchOnTheAirShows() {
+  const response = await fetch("/api/shows/on-the-air");
+  if (!response.ok) {
+    throw new Error("Failed to fetch shows on the air");
+  }
+  const data = await response.json();
+  return data.results || [];
+}
+export async function fetchPopularShows() {
+  const response = await fetch("/api/shows/popular");
+  if (!response.ok) {
+    throw new Error("Failed to fetch popular shows");
+  }
+  const data = await response.json();
+  return data.results || [];
+}
+export async function fetchTopRatedShows() {
+  const response = await fetch("/api/shows/top-rated");
+  if (!response.ok) {
+    throw new Error("Failed to fetch top-rated shows");
+  }
+  const data = await response.json();
+  return data.results || [];
+}
+export async function searchShows(query: string) {
+  const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+  if (!response.ok) {
+    throw new Error("Failed to search TV shows");
+  }
+  const data = await response.json();
+  return data.shows || [];
+}

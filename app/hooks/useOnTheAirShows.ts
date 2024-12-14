@@ -1,36 +1,51 @@
-// src/hooks/useOnTheAirShows.ts
-import { useQuery } from "@tanstack/react-query";
-import { fetchOnTheAirShows, searchTVShows } from "../repositories/tvShowRepository";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchOnTheAirShows, searchShows } from "../../app/repositories/tvShowRepository";
 
 export const useOnTheAirShows = () => {
+  const [shows, setShows] = useState([]);
+  const [originalShows, setOriginalShows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredShows, setFilteredShows] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data: shows = [], isLoading, isError } = useQuery(
-    ["onTheAirShows"],
-    fetchOnTheAirShows,
-    {
-      onSuccess: (data) => setFilteredShows(data),
+  useEffect(() => {
+    loadOnTheAirShows();
+  }, []);
+
+  const loadOnTheAirShows = async () => {
+    setIsLoading(true);
+    try {
+      const onTheAirShows = await fetchOnTheAirShows();
+      setShows(onTheAirShows);
+      setOriginalShows(onTheAirShows);
+    } catch (error) {
+      console.error("Error loading shows on the air:", error);
+    } finally {
+      setIsLoading(false);
     }
-  );
+  };
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setFilteredShows(shows); // Réinitialise aux données originales
-    } else {
-      const results = await searchTVShows(query);
-      setFilteredShows(results);
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setShows(originalShows);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const searchResults = await searchShows(searchQuery);
+      setShows(searchResults);
+    } catch (error) {
+      console.error("Error searching shows:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
-    shows: filteredShows,
-    isLoading,
-    isError,
+    shows,
     searchQuery,
     setSearchQuery,
     handleSearch,
+    isLoading,
   };
 };

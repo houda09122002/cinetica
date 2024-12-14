@@ -1,36 +1,51 @@
-// src/hooks/usePopularMovies.ts
-import { useQuery } from "@tanstack/react-query";
-import { fetchPopularMovies, searchMovies } from "../repositories/movieRepository";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchPopularMovies, searchMovies } from "../../app/repositories/movieRepository";
 
 export const usePopularMovies = () => {
+  const [movies, setMovies] = useState([]);
+  const [originalMovies, setOriginalMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data: movies = [], isLoading, isError } = useQuery(
-    ["popularMovies"],
-    fetchPopularMovies,
-    {
-      onSuccess: (data) => setFilteredMovies(data),
+  useEffect(() => {
+    loadPopularMovies();
+  }, []);
+
+  const loadPopularMovies = async () => {
+    setIsLoading(true);
+    try {
+      const popularMovies = await fetchPopularMovies();
+      setMovies(popularMovies);
+      setOriginalMovies(popularMovies);
+    } catch (error) {
+      console.error("Error loading popular movies:", error);
+    } finally {
+      setIsLoading(false);
     }
-  );
+  };
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setFilteredMovies(movies); // Réinitialise aux données originales
-    } else {
-      const results = await searchMovies(query);
-      setFilteredMovies(results);
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setMovies(originalMovies);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const searchResults = await searchMovies(searchQuery);
+      setMovies(searchResults);
+    } catch (error) {
+      console.error("Error searching movies:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
-    movies: filteredMovies,
-    isLoading,
-    isError,
+    movies,
     searchQuery,
     setSearchQuery,
     handleSearch,
+    isLoading,
   };
 };
