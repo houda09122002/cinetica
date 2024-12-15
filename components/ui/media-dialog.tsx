@@ -1,3 +1,5 @@
+"use client";
+
 import { Movie } from "../../app/api/entities/movie";
 import { TVShow } from "../../app/api/entities/TVShow";
 import { format } from "date-fns";
@@ -7,7 +9,6 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle, // Ajoutez DialogTitle
 } from "../../components/ui/dialog";
 import { Dot } from "lucide-react";
 import { GENRES_MAP, TV_GENRES_MAP } from "../../app/constants/genres";
@@ -44,15 +45,14 @@ export function MediaDialog({
   };
 
   const getOriginalTitle = () => {
-    return isMovie
-      ? (media as Movie).original_title
-      : (media as TVShow).original_name;
+    return isMovie ? (media as Movie).original_title : (media as TVShow).original_name;
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black/90">
-        <DialogTitle className="sr-only">{getTitle()}</DialogTitle> {/* Utilisez un titre masqué pour l'accessibilité */}
+      {/* Carte principale */}
+      <DialogContent className="h-screen max-h-screen overflow-y-auto p-0 bg-black/90 rounded-lg max-w-6xl">
+        {/* En-tête */}
         <DialogHeader className="relative h-[300px] sm:h-[400px] overflow-hidden">
           <Image
             src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`}
@@ -61,9 +61,7 @@ export function MediaDialog({
             className="object-cover"
             priority
           />
-
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <div className="flex items-center gap-2 text-white/80 text-sm font-medium mb-2">
               <Badge
@@ -76,12 +74,6 @@ export function MediaDialog({
               <span>{format(getDate(), "yyyy")}</span>
               <Dot className="w-4 h-4 text-white/60" />
               <span>{media.original_language.toUpperCase()}</span>
-              {!isMovie && (media as TVShow).origin_country && (
-                <>
-                  <Dot className="w-4 h-4 text-white/60" />
-                  <span>{(media as TVShow).origin_country.join(", ")}</span>
-                </>
-              )}
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -102,30 +94,9 @@ export function MediaDialog({
           </div>
         </DialogHeader>
 
+        {/* Contenu Principal */}
         <div className="p-6 space-y-6">
-          <div className="grid grid-cols-3 gap-4 py-4 border-y border-white/10">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-white/60">
-                {isMovie ? "Release Date" : "First Air Date"}
-              </span>
-              <span className="text-sm text-white">
-                {format(getDate(), "MMM d, yyyy")}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-white/60">Vote Count</span>
-              <span className="text-sm text-white">
-                {media.vote_count.toLocaleString()}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-white/60">Popularity</span>
-              <span className="text-sm text-white">
-                {media.popularity.toFixed(0)}
-              </span>
-            </div>
-          </div>
-
+          {/* Synopsis */}
           <div>
             <h3 className="text-lg font-semibold text-white mb-2">Synopsis</h3>
             <p className="text-base leading-relaxed text-white/80">
@@ -133,10 +104,42 @@ export function MediaDialog({
             </p>
           </div>
 
-          <div className="text-sm text-white/60">
-            Original Title:{" "}
-            <span className="text-white">{getOriginalTitle()}</span>
-          </div>
+          {/* Affichage des Acteurs */}
+          {(media as any).actors && (media as any).actors.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-4">Actors</h3>
+              {/* Grille dynamique */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                {(media as any).actors.map((actor: any) => (
+                  <div
+                    key={actor.id}
+                    className="flex items-start gap-4 bg-white/10 p-4 rounded-lg"
+                  >
+                    {/* Image de l'acteur */}
+                    <Image
+                      src={
+                        actor.profile_path
+                          ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                          : "/placeholder.jpg"
+                      }
+                      alt={actor.name}
+                      width={100}
+                      height={100}
+                      className="rounded-lg object-cover"
+                    />
+
+                    {/* Informations de l'acteur */}
+                    <div className="flex-1">
+                      <h4 className="text-base font-semibold text-white">{actor.name}</h4>
+                      <p className="text-sm text-white/80">
+                        <span className="font-medium">Character:</span> {actor.character}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

@@ -36,6 +36,7 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
       backdrop_path: "backdrop_path" in media ? media.backdrop_path || null : null,
       original_language: "original_language" in media ? media.original_language || "en" : "en",
       genre_ids: "genre_ids" in media ? media.genre_ids || [] : [],
+      actors: "actors" in media ? media.actors || [] : [], // Ajoute les acteurs ici
     } as Movie;
   } else if ("name" in media) {
     // C'est une TVShow
@@ -54,6 +55,7 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
       backdrop_path: "backdrop_path" in media ? media.backdrop_path || null : null,
       original_language: "original_language" in media ? media.original_language || "en" : "en",
       genre_ids: "genre_ids" in media ? media.genre_ids || [] : [],
+      actors: "actors" in media ? media.actors || [] : [], // Ajoute les acteurs ici
     } as TVShow;
   }
 
