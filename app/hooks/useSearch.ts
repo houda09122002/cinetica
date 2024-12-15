@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { searchMoviesAndShows } from "../repositories/searchRepository";
-
-// Définir le type pour les résultats
 export interface SearchResult {
   id: number;
-  title?: string; // Pour les films
-  name?: string; // Pour les séries
+  title?: string; 
+  name?: string;
   poster_path: string | null;
   release_date?: string;
   first_air_date?: string;
@@ -14,30 +12,29 @@ export interface SearchResult {
 
 
 export const useSearch = () => {
-  const [query, setQuery] = useState<string>(""); // Recherche courante
-  const [results, setResults] = useState<SearchResult[]>([]); // Résultats de recherche
-  const [isLoading, setIsLoading] = useState<boolean>(false); // État de chargement
-  const [error, setError] = useState<string | null>(null); // Pour capturer les erreurs
+  const [query, setQuery] = useState<string>(""); 
+  const [results, setResults] = useState<SearchResult[]>([]); 
+  const [isLoading, setIsLoading] = useState<boolean>(false); 
+  const [error, setError] = useState<string | null>(null); 
 
-  // Fonction de recherche avec option de query dynamique
   const handleSearch = async (customQuery?: string) => {
-    const searchQuery = customQuery ?? query; // Utiliser customQuery si fourni, sinon query
-    if (!searchQuery.trim()) return; // Empêcher les recherches vides
+    const searchQuery = customQuery ?? query; 
+    if (!searchQuery.trim()) return; 
 
     setIsLoading(true);
-    setError(null); // Réinitialiser les erreurs avant une nouvelle recherche
+    setError(null); 
 
     try {
-      const data = await searchMoviesAndShows(searchQuery); // Appeler l'API
-      const combinedResults: SearchResult[] = [...data.movies, ...data.shows]; // Combiner les résultats
-      setResults(combinedResults); // Mettre à jour les résultats
+      const data = await searchMoviesAndShows(searchQuery); 
+      const combinedResults: SearchResult[] = [...data.movies, ...data.shows]; 
+      setResults(combinedResults); 
     } catch (error) {
       console.error("Search error:", error);
-      setError("Failed to fetch results. Please try again."); // Capturer l'erreur
+      setError("Failed to fetch results. Please try again."); 
     } finally {
-      setIsLoading(false); // Arrêter l'état de chargement
+      setIsLoading(false);
     }
   };
 
-  return { query, setQuery, handleSearch, isLoading, results, error }; // Retourner les valeurs nécessaires
+  return { query, setQuery, handleSearch, isLoading, results, error }; 
 };

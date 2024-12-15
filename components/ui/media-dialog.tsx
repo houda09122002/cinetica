@@ -13,7 +13,7 @@ import {
 import { Dot } from "lucide-react";
 import { GENRES_MAP, TV_GENRES_MAP } from "../../app/constants/genres";
 
-// Définir un type pour les acteurs
+
 interface Actor {
   id: number;
   name: string;
@@ -24,7 +24,7 @@ interface Actor {
 interface MediaDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  media: (Movie | TVShow) & { actors?: Actor[] } | null; // Ajout des acteurs
+  media: (Movie | TVShow) & { actors?: Actor[] } | null; 
   isMovie?: boolean;
 }
 

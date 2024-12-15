@@ -32,7 +32,6 @@ interface TVShow {
 }
 
 export async function GET() {
-  // Fonction pour récupérer les acteurs pour un film
   const fetchMovieCredits = async (movieId: number): Promise<Actor[]> => {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`
@@ -42,10 +41,8 @@ export async function GET() {
       return [];
     }
     const data = await response.json();
-    return data.cast.slice(0, 5); // Limite à 5 acteurs principaux
+    return data.cast.slice(0, 5);
   };
-
-  // Fonction pour récupérer les acteurs pour une série TV
   const fetchTVShowCredits = async (tvShowId: number): Promise<Actor[]> => {
     const response = await fetch(
       `https://api.themoviedb.org/3/tv/${tvShowId}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`
@@ -55,10 +52,9 @@ export async function GET() {
       return [];
     }
     const data = await response.json();
-    return data.cast.slice(0, 5); // Limite à 5 acteurs principaux
+    return data.cast.slice(0, 5);
   };
 
-  // Fonction pour récupérer les données paginées pour les films ou séries TV
   const fetchPaginatedData = async (endpoint: string, totalPages: number = 5): Promise<Movie[] | TVShow[]> => {
     const pagePromises = Array.from({ length: totalPages }, (_, i) =>
       fetch(`${endpoint}&page=${i + 1}`).then((res) => res.json())
@@ -71,13 +67,12 @@ export async function GET() {
     const movieEndpoint = `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&sort_by=popularity.desc`;
     const tvShowEndpoint = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_API_KEY}&language=en-US&sort_by=popularity.desc`;
 
-    // Récupérer les 5 pages pour les films et les séries TV
+
     const [movies, tvShows] = await Promise.all([
       fetchPaginatedData(movieEndpoint),
       fetchPaginatedData(tvShowEndpoint),
     ]);
 
-    // Ajouter les acteurs pour chaque film et série TV
     const moviesWithActors = await Promise.all(
       (movies as Movie[]).map(async (movie) => ({
         ...movie,
@@ -92,7 +87,7 @@ export async function GET() {
       }))
     );
 
-    // Retourner les résultats combinés
+
     return NextResponse.json({
       movies: moviesWithActors,
       shows: tvShowsWithActors,

@@ -13,7 +13,6 @@ export async function middleware(request: NextRequest) {
   console.log("Middleware actif, token :", token);
   console.log("Requête pour :", pathname);
 
-  // Si l'utilisateur n'est pas authentifié
   if (!token) {
     if (pathname === "/" || pathname.startsWith("/dashboard")) {
       const loginUrl = new URL("/login", request.url);
@@ -22,7 +21,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Si l'utilisateur est authentifié
   if (token) {
     if (pathname === "/login") {
       const dashboardUrl = new URL("/dashboard", request.url);
@@ -34,7 +32,6 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Matcher pour appliquer le middleware sur les routes nécessaires
 export const config = {
   matcher: ["/", "/login", "/dashboard/:path*"],
 };

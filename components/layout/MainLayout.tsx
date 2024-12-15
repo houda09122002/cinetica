@@ -20,7 +20,6 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
   if (!media) return null;
 
   if ("title" in media) {
-    // C'est un Movie
     return {
       id: media.id,
       title: media.title,
@@ -36,10 +35,9 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
       backdrop_path: "backdrop_path" in media ? media.backdrop_path || null : null,
       original_language: "original_language" in media ? media.original_language || "en" : "en",
       genre_ids: "genre_ids" in media ? media.genre_ids || [] : [],
-      actors: "actors" in media ? media.actors || [] : [], // Ajoute les acteurs ici
+      actors: "actors" in media ? media.actors || [] : [], 
     } as Movie;
   } else if ("name" in media) {
-    // C'est une TVShow
     return {
       id: media.id,
       name: media.name,
@@ -55,7 +53,7 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
       backdrop_path: "backdrop_path" in media ? media.backdrop_path || null : null,
       original_language: "original_language" in media ? media.original_language || "en" : "en",
       genre_ids: "genre_ids" in media ? media.genre_ids || [] : [],
-      actors: "actors" in media ? media.actors || [] : [], // Ajoute les acteurs ici
+      actors: "actors" in media ? media.actors || [] : [], 
     } as TVShow;
   }
 

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useNowPlayingMovies } from "../../../hooks/useNowPlayingMovies";
 import { Card, CardHeader, CardTitle, CardDescription } from "../../../../components/ui/card";
@@ -21,14 +20,14 @@ const formatDate = (date: string | null | undefined) => {
 };
 
 export default function NowPlayingMoviesPage() {
-  const { movies } = useNowPlayingMovies(); // movies est de type Movie[]
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null); // selectedMovie est un Movie ou null
+  const { movies } = useNowPlayingMovies(); 
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   return (
     <MainLayout title="Now Playing Movies">
       <main className="p-8">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-          {movies.map((movie: Movie) => ( // Typage explicite de movie
+          {movies.map((movie: Movie) => ( 
             <Card
               key={movie.id}
               className="overflow-hidden cursor-pointer transition-all hover:scale-90"

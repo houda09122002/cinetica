@@ -4,15 +4,15 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import type { SearchResult } from "../../app/hooks/useSearch"; // Importez le type SearchResult
+import type { SearchResult } from "../../app/hooks/useSearch";
 
 interface SearchResultsProps {
   query: string;
-  onItemClick: (item: SearchResult) => void; // Spécifiez le type pour l'élément
+  onItemClick: (item: SearchResult) => void;
 }
 
 export default function SearchResults({ query, onItemClick }: SearchResultsProps) {
-  const [results, setResults] = useState<SearchResult[]>([]); // Utilisez le type SearchResult[]
+  const [results, setResults] = useState<SearchResult[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function SearchResults({ query, onItemClick }: SearchResultsProps
       try {
         const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
         const data = await response.json();
-        setResults(data.movies.concat(data.shows)); // Combine les résultats de films et séries
+        setResults(data.movies.concat(data.shows));
       } catch (error) {
         console.error("Search error:", error);
       } finally {
@@ -36,7 +36,7 @@ export default function SearchResults({ query, onItemClick }: SearchResultsProps
 
     const delayDebounce = setTimeout(() => {
       fetchData();
-    }, 500); // Ajout d'un délai pour la saisie dynamique
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);
@@ -55,12 +55,12 @@ export default function SearchResults({ query, onItemClick }: SearchResultsProps
         <Card
           key={item.id}
           className="overflow-hidden cursor-pointer transition-all hover:scale-90"
-          onClick={() => onItemClick(item)} // Utilise l'élément avec le type correct
+          onClick={() => onItemClick(item)} 
         >
           <div className="aspect-[2/3] relative">
           <Image
             src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-            alt={item.title || item.name || "Image indisponible"} // Ajouter une valeur par défaut
+            alt={item.title || item.name || "Image indisponible"}
             fill
             className="object-cover"
           />

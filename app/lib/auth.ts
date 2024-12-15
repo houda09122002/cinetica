@@ -1,11 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { Session, User as NextAuthUser } from "next-auth"; // Importez NextAuthUser
-import { users } from "../../repository/user"; // Chemin vers les utilisateurs simulés
+import { Session, User as NextAuthUser } from "next-auth";
+import { users } from "../../repository/user"; 
 import bcrypt from "bcrypt";
 
-// Étendre le type User de next-auth pour inclure des champs personnalisés
 declare module "next-auth" {
   interface User {
     id: string;
@@ -89,7 +88,6 @@ const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.apiKey = user.apiKey;
       } else {
-        // Réinitialiser les données utilisateur après la déconnexion
         token.id = null;
         token.apiKey = null;
       }
@@ -107,7 +105,6 @@ const authOptions: NextAuthOptions = {
           apiKey: token.apiKey,
         } as NextAuthUser;
       } else {
-        // Supprimez la propriété `user` au lieu de la définir sur null
         delete session.user;
       }
     
@@ -120,7 +117,7 @@ const authOptions: NextAuthOptions = {
       console.log("Déconnexion réussie pour :", session?.user?.name);
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "secret", // Vérifiez que cette variable est bien définie
+  secret: process.env.NEXTAUTH_SECRET || "secret", 
 };
 
 export default authOptions;

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    // Fonction pour récupérer les séries TV
     const fetchTVShows = async (page: number) => {
         const response = await fetch(
             `https://api.themoviedb.org/3/tv/on_the_air?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=${page}`
@@ -12,7 +11,6 @@ export async function GET() {
         return response.json();
     };
 
-    // Fonction pour récupérer les acteurs d'une série TV spécifique
     const fetchTVShowCredits = async (tvShowId: number) => {
         const response = await fetch(
             `https://api.themoviedb.org/3/tv/${tvShowId}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`
@@ -21,23 +19,21 @@ export async function GET() {
             throw new Error(`Failed to fetch credits for TV show ID: ${tvShowId}`);
         }
         const data = await response.json();
-        return data.cast; // Retourne uniquement les acteurs
+        return data.cast; 
     };
 
     try {
-        const totalPages = 5; // Nombre de pages à récupérer
+        const totalPages = 5; 
         const tvShowPromises = Array.from({ length: totalPages }, (_, i) => fetchTVShows(i + 1));
 
-        // Récupérer les séries TV
         const tvShowResults = await Promise.all(tvShowPromises);
         const combinedTVShows = tvShowResults.flatMap((result) => result.results);
 
-        // Ajouter les acteurs pour chaque série TV
         const tvShowsWithActorsPromises = combinedTVShows.map(async (tvShow) => {
-            const actors = await fetchTVShowCredits(tvShow.id); // Récupère les acteurs pour cette série
+            const actors = await fetchTVShowCredits(tvShow.id); 
             return {
                 ...tvShow,
-                actors, // Ajoute les acteurs à l'objet de la série
+                actors, 
             };
         });
 

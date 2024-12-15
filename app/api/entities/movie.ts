@@ -15,4 +15,3 @@ export interface Movie {
     genre_ids: number[];
   }
 
-  //get https://api.themoviedb.org/3/discover/movie?api_key=742fea0be56f5a559bff7d8a8b8678c9&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc

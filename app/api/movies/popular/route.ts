@@ -29,12 +29,11 @@ export async function GET() {
         const movieResults = await Promise.all(moviePromises);
         const combinedMovies = movieResults.flatMap((result) => result.results);
 
-        // Ajouter les acteurs pour chaque film
         const movieWithActorsPromises = combinedMovies.map(async (movie) => {
-            const actors = await fetchActors(movie.id); // Récupère les acteurs pour ce film
+            const actors = await fetchActors(movie.id); 
             return {
                 ...movie,
-                actors, // Ajoute les acteurs au film
+                actors,
             };
         });
 

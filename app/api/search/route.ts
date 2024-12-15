@@ -51,7 +51,6 @@ async function fetchCredits(id: number, isMovie: boolean): Promise<Actor[]> {
     const response = await fetch(endpoint);
     const data: TMDBCreditsResponse = await response.json();
 
-    // Retourner uniquement les acteurs
     return data.cast.map((actor) => ({
       id: actor.id,
       name: actor.name,
@@ -73,19 +72,19 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Recherche de films
+
     const movieResponse = await fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&query=${query}&language=en-US&page=1`
     );
     const movieData = await movieResponse.json();
 
-    // Recherche de séries TV
+ 
     const tvResponse = await fetch(
       `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_API_KEY}&query=${query}&language=en-US&page=1`
     );
     const tvData = await tvResponse.json();
 
-    // Récupérer les acteurs pour chaque film et série
+
     const moviesWithActors: MovieResult[] = await Promise.all(
       movieData.results.map(async (movie: MovieResult) => {
         const actors = await fetchCredits(movie.id, true);

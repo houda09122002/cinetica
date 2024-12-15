@@ -19,22 +19,22 @@ export async function GET() {
             throw new Error(`Failed to fetch credits for movie ID: ${movieId}`);
         }
         const data = await response.json();
-        return data.cast; // Retourne uniquement les acteurs
+        return data.cast; 
     };
 
     try {
-        const totalPages = 5; // Limiter à 5 pages
+        const totalPages = 5; 
         const moviePromises = Array.from({ length: totalPages }, (_, i) => fetchMovies(i + 1));
 
         const movieResults = await Promise.all(moviePromises);
         const combinedMovies = movieResults.flatMap((result) => result.results);
 
-        // Ajouter les acteurs pour chaque film
+       
         const movieWithActorsPromises = combinedMovies.map(async (movie) => {
-            const actors = await fetchActors(movie.id); // Récupère les acteurs pour ce film
+            const actors = await fetchActors(movie.id); 
             return {
                 ...movie,
-                actors, // Ajoute les acteurs au film
+                actors, 
             };
         });
 

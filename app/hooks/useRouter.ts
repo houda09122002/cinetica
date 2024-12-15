@@ -4,11 +4,9 @@ export function useRouter() {
   const router = useNextRouter();
 
   const navigate = (path: string, query: Record<string, string> = {}) => {
-    // Construire l'URL avec les paramètres de requête
     const queryString = new URLSearchParams(query).toString();
     const fullPath = queryString ? `${path}?${queryString}` : path;
-
-    router.push(fullPath); // Utiliser le chemin complet comme chaîne
+    router.push(fullPath); 
   };
 
   return {

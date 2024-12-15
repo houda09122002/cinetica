@@ -5,11 +5,11 @@ export function useIsMobile() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // Par exemple, considérer mobile si la largeur est inférieure à 768px
+      setIsMobile(window.innerWidth < 768);
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Vérifiez la taille initiale
+    handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);

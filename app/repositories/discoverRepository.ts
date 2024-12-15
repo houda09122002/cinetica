@@ -1,4 +1,3 @@
-// src/repositories/discoverRepository.ts
 export const fetchDiscoverData = async () => {
     const response = await fetch("/api/discover");
     if (!response.ok) {
