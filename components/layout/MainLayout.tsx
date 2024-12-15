@@ -16,11 +16,11 @@ interface MainLayoutProps {
   children: ReactNode;
   title: string;
 }
-
 function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | TVShow | null {
   if (!media) return null;
 
   if ("title" in media) {
+    // C'est un Movie
     return {
       id: media.id,
       title: media.title,
@@ -36,9 +36,10 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
       backdrop_path: "backdrop_path" in media ? media.backdrop_path || null : null,
       original_language: "original_language" in media ? media.original_language || "en" : "en",
       genre_ids: "genre_ids" in media ? media.genre_ids || [] : [],
-      actors: "actors" in media ? media.actors || [] : [],
+      actors: "actors" in media ? media.actors || [] : [], // Ajoute les acteurs ici
     } as Movie;
   } else if ("name" in media) {
+    // C'est une TVShow
     return {
       id: media.id,
       name: media.name,
@@ -54,7 +55,7 @@ function mapSelectedMedia(media: SearchResult | Movie | TVShow | null): Movie | 
       backdrop_path: "backdrop_path" in media ? media.backdrop_path || null : null,
       original_language: "original_language" in media ? media.original_language || "en" : "en",
       genre_ids: "genre_ids" in media ? media.genre_ids || [] : [],
-      actors: "actors" in media ? media.actors || [] : [],
+      actors: "actors" in media ? media.actors || [] : [], // Ajoute les acteurs ici
     } as TVShow;
   }
 
@@ -72,54 +73,52 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
   if (!mounted) return null;
 
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "dark" : ""} flex flex-col`}>
-      {/* Sidebar */}
-      <div className={`flex ${isSidebarCollapsed ? "ml-16" : "ml-64"} transition-all`}>
-        <Sidebar
-          isCollapsed={isSidebarCollapsed}
-          toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        />
+    <div className={`min-h-screen ${theme === "dark" ? "dark" : ""}`}>
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
 
-        <div className="flex-1">
-          {/* Header */}
-          <header className="p-4 border-b flex flex-col sm:flex-row items-center justify-between sticky top-0 z-10 bg-white dark:bg-black">
-            <h1 className="text-xl sm:text-2xl font-bold">{query ? "Search Results" : title}</h1>
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarCollapsed ? "ml-16" : "ml-64"
+        }`}
+      >
+        <header className="p-4 border-b flex items-center justify-between sticky top-0 z-10 bg-white dark:bg-black">
+          <h1 className="text-2xl font-bold ml-4">{query ? "Search Results" : title}</h1>
 
-            <form
-              className="mt-4 sm:mt-0 flex items-center gap-2"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
-                className="px-4 py-2 rounded-lg w-full sm:w-48 md:w-64"
-              />
-              <Button type="submit" variant="ghost" size="icon">
-                <Search className="h-5 w-5" />
-              </Button>
-            </form>
-          </header>
+          <form
+            className="flex items-center gap-2"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search..."
+              className="px-4 py-2 rounded-lg w-48"
+            />
+            <Button type="submit" variant="ghost" size="icon">
+              <Search className="h-5 w-5" />
+            </Button>
+          </form>
+        </header>
 
-          {/* Main Content */}
-          <main className="p-4 sm:p-8 flex-1">
-            {query ? (
-              <SearchResults
-                query={query}
-                onItemClick={(item) => {
-                  setSelectedMedia(item);
-                  setIsMediaDialogOpen(true);
-                }}
-              />
-            ) : (
-              children
-            )}
-          </main>
-        </div>
+        <main className="p-8">
+          {query ? (
+            <SearchResults
+              query={query}
+              onItemClick={(item) => {
+                setSelectedMedia(item);
+                setIsMediaDialogOpen(true);
+              }}
+            />
+          ) : (
+            children
+          )}
+        </main>
       </div>
 
-      {/* Media Dialog */}
       <MediaDialog
         isOpen={isMediaDialogOpen}
         onOpenChange={(open) => setIsMediaDialogOpen(open)}
