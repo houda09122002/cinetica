@@ -13,7 +13,6 @@ import {
 import { Dot } from "lucide-react";
 import { GENRES_MAP, TV_GENRES_MAP } from "../../app/constants/genres";
 
-// Définir un type pour les acteurs
 interface Actor {
   id: number;
   name: string;
@@ -24,7 +23,7 @@ interface Actor {
 interface MediaDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  media: (Movie | TVShow) & { actors?: Actor[] } | null; // Ajout des acteurs
+  media: (Movie | TVShow) & { actors?: Actor[] } | null;
   isMovie?: boolean;
 }
 
@@ -55,9 +54,9 @@ export function MediaDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       {/* Carte principale */}
-      <DialogContent className="h-screen max-h-screen overflow-y-auto p-0 bg-black/90 rounded-lg max-w-6xl">
+      <DialogContent className="h-screen max-h-screen overflow-y-auto p-0 bg-black/90 rounded-lg max-w-6xl mx-auto">
         {/* En-tête */}
-        <DialogHeader className="relative h-[300px] sm:h-[400px] overflow-hidden">
+        <DialogHeader className="relative h-[250px] sm:h-[300px] md:h-[400px] overflow-hidden">
           <Image
             src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`}
             alt={getTitle()}
@@ -66,21 +65,21 @@ export function MediaDialog({
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6">
-            <div className="flex items-center gap-2 text-white/80 text-sm font-medium mb-2">
+          <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-white/80 text-sm font-medium mb-2">
               <Badge
                 variant="secondary"
                 className="bg-white/20 hover:bg-white/30 backdrop-blur-sm"
               >
                 {media.vote_average.toFixed(1)} ★
               </Badge>
-              <Dot className="w-4 h-4 text-white/60" />
+              <Dot className="hidden sm:inline w-4 h-4 text-white/60" />
               <span>{format(getDate(), "yyyy")}</span>
-              <Dot className="w-4 h-4 text-white/60" />
+              <Dot className="hidden sm:inline w-4 h-4 text-white/60" />
               <span>{media.original_language.toUpperCase()}</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">
               {getTitle()}
             </h2>
 
@@ -99,11 +98,11 @@ export function MediaDialog({
         </DialogHeader>
 
         {/* Contenu Principal */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Synopsis */}
           <div>
             <h3 className="text-lg font-semibold text-white mb-2">Synopsis</h3>
-            <p className="text-base leading-relaxed text-white/80">
+            <p className="text-sm sm:text-base leading-relaxed text-white/80">
               {media.overview}
             </p>
           </div>
@@ -113,11 +112,11 @@ export function MediaDialog({
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Actors</h3>
               {/* Grille dynamique */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {media.actors.map((actor: Actor) => (
                   <div
                     key={actor.id}
-                    className="flex items-start gap-4 bg-white/10 p-4 rounded-lg"
+                    className="flex flex-col items-center gap-2 bg-white/10 p-4 rounded-lg"
                   >
                     {/* Image de l'acteur */}
                     <Image
@@ -133,10 +132,10 @@ export function MediaDialog({
                     />
 
                     {/* Informations de l'acteur */}
-                    <div className="flex-1">
-                      <h4 className="text-base font-semibold text-white">{actor.name}</h4>
-                      <p className="text-sm text-white/80">
-                        <span className="font-medium">Character:</span> {actor.character}
+                    <div className="text-center">
+                      <h4 className="text-sm font-semibold text-white">{actor.name}</h4>
+                      <p className="text-xs text-white/80">
+                        {actor.character}
                       </p>
                     </div>
                   </div>

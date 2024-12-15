@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: "class", // Mode sombre activé par classe
+  darkMode: "class", // Active le mode sombre via une classe
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,10 +11,12 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
+        xs: "480px", // Très petits écrans (ex : anciens téléphones)
         sm: "640px", // Mobile
         md: "768px", // Tablette
         lg: "1024px", // Desktop
-        xl: "1280px",
+        xl: "1280px", // Grand écran
+        "2xl": "1536px", // Très grands écrans
       },
       colors: {
         background: "hsl(var(--background))",
@@ -68,14 +70,47 @@ const config: Config = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      spacing: {
+        128: "32rem", // Ajout de grands espacements
+        144: "36rem",
+        "1/2": "50%", // Fractionnements utiles
+        "1/3": "33.333333%",
+        "2/3": "66.666667%",
+        "1/4": "25%",
+        "3/4": "75%",
+      },
+      maxWidth: {
+        xs: "20rem", // Très petit conteneur
+        sm: "24rem",
+        md: "28rem",
+        lg: "32rem",
+        xl: "36rem",
+        "2xl": "42rem",
+        "3xl": "48rem", // Conteneur très large
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        full: "9999px", // Pour les cercles parfaits
+      },
+      fontSize: {
+        xs: "0.75rem", // Texte très petit
+        sm: "0.875rem", // Petit texte
+        base: "1rem", // Texte standard
+        lg: "1.125rem", // Grand texte
+        xl: "1.25rem", // Très grand texte
+        "2xl": "1.5rem",
+        "3xl": "1.875rem",
+        "4xl": "2.25rem",
+        "5xl": "3rem",
+        "6xl": "4rem", // Titres principaux
       },
     },
   },
-  plugins: [require("tailwindcss-animate")], // Assurez-vous que ce plugin est installé
+  plugins: [
+    require("tailwindcss-animate"), // Pour les animations// Pour couper les textes longs avec "..."
+  ],
 };
 
 export default config;
