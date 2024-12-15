@@ -19,16 +19,16 @@ export default function MainPage() {
   return (
     <QueryClientProvider client={queryClient}>
       <MainLayout title="Discover">
-        <main className="p-8 overflow-hidden">
+        <main className="p-4 sm:p-8 space-y-8 overflow-hidden">
           {discoverData && (
             <div className="space-y-12">
               {/* Movies Carousel */}
               {discoverData.movies?.length > 0 && (
                 <MediaCarousel
                   title="Movies"
-                  items={discoverData.movies} // Pas besoin de forcer le type
+                  items={discoverData.movies}
                   scrollRef={movieScrollRef}
-                  onItemClick={(item) => setSelectedMedia(item)} // Compatible avec Movie et TVShow
+                  onItemClick={(item) => setSelectedMedia(item)}
                   isMovie={true}
                 />
               )}
@@ -47,14 +47,11 @@ export default function MainPage() {
 
           {/* Media Dialog */}
           <MediaDialog
-          isOpen={!!selectedMedia}
-          onOpenChange={(open) => !open && setSelectedMedia(null)}
-          media={selectedMedia}
-          isMovie={selectedMedia ? ("title" in selectedMedia ? true : false) : undefined}
-        />
-
-
-
+            isOpen={!!selectedMedia}
+            onOpenChange={(open) => !open && setSelectedMedia(null)}
+            media={selectedMedia}
+            isMovie={selectedMedia ? "title" in selectedMedia : undefined}
+          />
         </main>
       </MainLayout>
     </QueryClientProvider>

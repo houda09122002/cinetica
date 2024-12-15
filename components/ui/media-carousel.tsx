@@ -23,10 +23,10 @@ export const MediaCarousel = ({
   isMovie,
 }: {
   title: string;
-  items: MediaItem[]; // Accepte Movie ou TVShow
+  items: MediaItem[];
   scrollRef: React.RefObject<HTMLDivElement>;
   onItemClick: (item: MediaItem) => void;
-  isMovie: boolean; // Ajout explicite de la prop isMovie
+  isMovie: boolean;
 }) => {
   if (!items || items.length === 0) return null;
 
@@ -39,25 +39,28 @@ export const MediaCarousel = ({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold">{title}</h2>
+      <h2 className="text-xl md:text-2xl font-semibold px-4 sm:px-0">{title}</h2>
       <div className="relative group">
         {/* Bouton pour défiler à gauche */}
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex"
           onClick={() => scroll("left")}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
 
         {/* Conteneur du carrousel */}
-        <div ref={scrollRef} className="carousel-container">
-          <div className="carousel">
+        <div
+          ref={scrollRef}
+          className="carousel-container overflow-x-auto no-scrollbar scroll-smooth px-4 sm:px-0"
+        >
+          <div className="flex gap-4">
             {items.map((item) => (
               <Card
                 key={item.id}
-                className="carousel-item overflow-hidden cursor-pointer transition-all hover:scale-90"
+                className="flex-shrink-0 w-[150px] sm:w-[180px] md:w-[200px] lg:w-[240px] cursor-pointer transition-transform hover:scale-95"
                 onClick={() => onItemClick(item)}
               >
                 <div className="aspect-[2/3] relative">
@@ -73,10 +76,10 @@ export const MediaCarousel = ({
                   />
                 </div>
                 <CardHeader className="p-4">
-                  <CardTitle className="text-lg">
+                  <CardTitle className="text-sm md:text-base truncate">
                     {isMovie ? (item as Movie).title : (item as TVShow).name}
                   </CardTitle>
-                  <CardDescription className="flex items-center justify-between">
+                  <CardDescription className="flex items-center justify-between text-xs md:text-sm">
                     <span>
                       {isMovie
                         ? formatDate((item as Movie).release_date)
@@ -94,7 +97,7 @@ export const MediaCarousel = ({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex"
           onClick={() => scroll("right")}
         >
           <ChevronRight className="h-4 w-4" />
