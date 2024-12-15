@@ -14,7 +14,7 @@ body {
     @apply flex gap-4 w-max;
   }
   .carousel-item {
-    @apply flex-none w-[300px];
+    @apply flex-none w-[250px];
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

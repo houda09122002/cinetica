@@ -26,7 +26,7 @@ export default function TopRatedMoviesPage() {
 
   return (
     <MainLayout title="Top Rated Movies">
-    <main className="space-y-8">
+    <main className="p-8">
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
         {movies.map((movie) => (
           <Card

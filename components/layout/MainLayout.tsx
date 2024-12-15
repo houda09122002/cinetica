@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { useIsMobile } from "../../components/ui/use-mobile"; 
 import Sidebar from "../../components/layout/Sidebar";
 import { useThemeToggle } from "../../app/hooks/useThemeToggle";
 import { Search } from "lucide-react";
@@ -70,6 +71,8 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
   const [selectedMedia, setSelectedMedia] = useState<SearchResult | Movie | TVShow | null>(null);
   const [isMediaDialogOpen, setIsMediaDialogOpen] = useState(false);
 
+  const isMobile = useIsMobile();
+
   if (!mounted) return null;
 
   return (
@@ -104,7 +107,7 @@ export default function MainLayout({ children, title }: MainLayoutProps) {
           </form>
         </header>
 
-        <main className="p-8">
+        <main className="space-y-8">
           {query ? (
             <SearchResults
               query={query}

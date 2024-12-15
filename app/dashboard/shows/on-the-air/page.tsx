@@ -27,7 +27,7 @@ export default function OnTheAirShowsPage() {
   return (
     <MainLayout title="TV Shows On The Air">
 
-    <main className="space-y-8">
+    <main className="p-8">
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
         {shows.map((show) => (
           <Card
