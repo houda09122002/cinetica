@@ -31,6 +31,17 @@ interface TVResult {
   actors?: Actor[];
 }
 
+interface TMDBCastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path?: string;
+}
+
+interface TMDBCreditsResponse {
+  cast: TMDBCastMember[];
+}
+
 async function fetchCredits(id: number, isMovie: boolean): Promise<Actor[]> {
   try {
     const endpoint = isMovie
@@ -38,15 +49,15 @@ async function fetchCredits(id: number, isMovie: boolean): Promise<Actor[]> {
       : `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`;
 
     const response = await fetch(endpoint);
-    const data = await response.json();
+    const data: TMDBCreditsResponse = await response.json();
 
     // Retourner uniquement les acteurs
-    return data.cast?.map((actor: any) => ({
+    return data.cast.map((actor) => ({
       id: actor.id,
       name: actor.name,
       character: actor.character,
       profile_path: actor.profile_path,
-    })) || [];
+    }));
   } catch (error) {
     console.error(`Failed to fetch credits for ${id}:`, error);
     return [];
