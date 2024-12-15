@@ -1,15 +1,21 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: "class", // Simplification
+  darkMode: "class", // Mode sombre activé par classe
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}", // Ajout pour les projets avec `src`
+    "./src/**/*.{js,ts,jsx,tsx,mdx}", // Pour les projets utilisant `src`
   ],
   theme: {
     extend: {
+      screens: {
+        sm: "640px", // Mobile
+        md: "768px", // Tablette
+        lg: "1024px", // Desktop
+        xl: "1280px",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -69,7 +75,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")], // Vérifiez que ce plugin est installé
+  plugins: [require("tailwindcss-animate")], // Assurez-vous que ce plugin est installé
 };
 
 export default config;
