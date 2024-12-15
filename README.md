@@ -128,16 +128,126 @@ To learn more, check out the [NextAuth.js Documentation](https://next-auth.js.or
 
 ```plaintext
 cinetica/
-├── app/                     # Application code
-│   ├── api/                 # API routes (e.g., authentication)
-│   ├── dashboard/           # Protected dashboard pages
-│   ├── login/               # Login page
-│   └── middleware.ts        # Middleware for route protection
-├── components/              # Reusable UI components
-├── public/                  # Static assets
-├── styles/                  # Global styles
-├── .env.local               # Environment variables
-└── next.config.js           # Next.js configuration
+├── app/
+│   ├── api/
+│   │   ├── auth/
+│   │   │   └── [...nextauth]/
+│   │   │       └── route.ts
+│   │   ├── discover/
+│   │   │   └── route.ts
+│   │   ├── entities/
+│   │   │   ├── TVShow.ts
+│   │   │   ├── cast.ts
+│   │   │   ├── discover.ts
+│   │   │   └── movie.ts
+│   │   ├── movies/
+│   │   │   ├── now-playing/
+│   │   │   │   └── route.ts
+│   │   │   ├── popular/
+│   │   │   │   └── route.ts
+│   │   │   └── top-rated/
+│   │   │       └── route.ts
+│   │   ├── search/
+│   │   │   └── route.ts
+│   │   └── shows/
+│   │       ├── on-the-air/
+│   │       │   └── route.ts
+│   │       ├── popular/
+│   │       │   └── route.ts
+│   │       └── top-rated/
+│   │           └── route.ts
+│   ├── constants/
+│   │   └── genres.ts
+│   ├── dashboard/
+│   │   ├── movies/
+│   │   │   ├── now-playing/
+│   │   │   │   └── page.tsx
+│   │   │   ├── popular/
+│   │   │   │   └── page.tsx
+│   │   │   └── top-rated/
+│   │   │       └── page.tsx
+│   │   ├── shows/
+│   │   │   ├── on-the-air/
+│   │   │   │   └── page.tsx
+│   │   │   ├── popular/
+│   │   │   │   └── page.tsx
+│   │   │   ├── top-rated/
+│   │   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── fonts/
+│   │   ├── GeistMonoVF.woff
+│   │   └── GeistVF.woff
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   ├── useDiscover.ts
+│   │   ├── useLogin.ts
+│   │   ├── useNowPlayingMovies.ts
+│   │   ├── useOnTheAirShows.ts
+│   │   ├── usePopularMovies.ts
+│   │   ├── usePopularShows.ts
+│   │   ├── useRouter.ts
+│   │   ├── useSearch.ts
+│   │   ├── useThemeToggle.ts
+│   │   ├── useTopRatedMovies.ts
+│   │   └── useTopRatedShows.ts
+│   ├── lib/
+│   │   ├── auth.ts
+│   │   └── utils.ts
+│   ├── login/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── repositories/
+│   │   ├── authRepository.ts
+│   │   ├── discoverRepository.ts
+│   │   ├── movieRepository.ts
+│   │   ├── searchRepository.ts
+│   │   └── tvShowRepository.ts
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── MainLayout.tsx
+│   │   │   ├── MenuItem.tsx
+│   │   │   ├── SearchBar.tsx
+│   │   │   ├── SearchResults.tsx
+│   │   │   └── Sidebar.tsx
+│   │   ├── ui/
+│   │   │   ├── badge.tsx
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── command.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   ├── input.tsx
+│   │   │   ├── media-carousel.tsx
+│   │   │   ├── media-dialog.tsx
+│   │   │   ├── separator.tsx
+│   │   │   ├── sheet.tsx
+│   │   │   ├── sidebar.tsx
+│   │   │   ├── skeleton.tsx
+│   │   │   ├── switch.tsx
+│   │   │   ├── tooltip.tsx
+│   │   │   └── use-mobile.tsx
+│   │   └── theme-provider.tsx
+│   ├── public/
+│   │   ├── clapperboard.jpeg
+│   │   └── clapperboard.png
+│   ├── middleware.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── .eslintrc.json
+├── .gitignore
+├── README.md
+├── components.json
+├── jsx.d.ts
+├── next.config.js
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── tailwind.config.ts
+└── tsconfig.json
+
+
 ```
 
 ---
