@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { cn } from "../../lib/utils";
 import {
   Clapperboard,
@@ -22,7 +22,7 @@ import { useThemeToggle } from "../../app/hooks/useThemeToggle";
 import { Button } from "../../components/ui/button";
 import { Switch } from "../../components/ui/switch";
 import { useRouter } from "next/navigation";
-import { useSidebar, SidebarProvider } from "../../components/layout/SidebarContext";
+import { SidebarProvider } from "../../components/layout/SidebarContext";
 
 export default function Sidebar({
   isCollapsed,
