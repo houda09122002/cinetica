@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { MediaDialog } from "../../../../components/ui/media-dialog";
 import MainLayout from "../../../../components/layout/MainLayout";
+import { TVShow } from "../../../api/entities/TVShow";
 const formatDate = (date: string | null | undefined) => {
   if (!date) return "Date inconnue";
   try {
@@ -19,9 +20,9 @@ const formatDate = (date: string | null | undefined) => {
 };
 
 export default function PopularShowsPage() {
-  const { shows, searchQuery } =
+  const { shows } =
     usePopularShows();
-  const [selectedShow, setSelectedShow] = useState(null);
+  const [selectedShow, setSelectedShow] = useState<TVShow | null>(null);
 
   return (
     <MainLayout title="Popular TV Shows">

@@ -1,15 +1,19 @@
-'use client';
+"use client";
 
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession(); // Ne récupérez que `status`
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/login")
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (status === "authenticated") {
+      router.push("/dashboard");
+    }
   }, [status, router]);
 
   if (status === "loading") {

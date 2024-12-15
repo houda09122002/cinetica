@@ -1,15 +1,24 @@
 import { NextAuthOptions } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt"; // Typage pour le token
-import { Session } from "next-auth"; // Typage pour la session
+import { Session, User as NextAuthUser } from "next-auth"; // Importez NextAuthUser
 import { users } from "../../repository/user"; // Chemin vers les utilisateurs simulés
 import bcrypt from "bcrypt";
 
-// Définir un type pour l'utilisateur
-interface User {
-  id: string;
-  name: string;
-  apiKey: string;
+// Étendre le type User de next-auth pour inclure des champs personnalisés
+declare module "next-auth" {
+  interface User {
+    id: string;
+    name: string;
+    apiKey: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string | null;
+    apiKey?: string | null;
+  }
 }
 
 const authOptions: NextAuthOptions = {
@@ -20,8 +29,7 @@ const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-
-      async authorize(credentials): Promise<User | null> {
+      async authorize(credentials): Promise<NextAuthUser | null> {
         console.log("Tentative d'authentification avec :", credentials);
 
         if (!credentials || !credentials.username || !credentials.password) {
@@ -74,7 +82,7 @@ const authOptions: NextAuthOptions = {
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User }) {
+    async jwt({ token, user }) {
       console.log("JWT callback - Avant enrichissement :", token, user);
 
       if (user) {
@@ -91,17 +99,18 @@ const authOptions: NextAuthOptions = {
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       console.log("Session callback - Avant enrichissement :", session);
-
+    
       if (token.id) {
         session.user = {
           ...session.user,
           id: token.id,
           apiKey: token.apiKey,
-        };
+        } as NextAuthUser;
       } else {
-        session.user = null; // Réinitialiser la session
+        // Supprimez la propriété `user` au lieu de la définir sur null
+        delete session.user;
       }
-
+    
       console.log("Session callback - Après enrichissement :", session);
       return session;
     },

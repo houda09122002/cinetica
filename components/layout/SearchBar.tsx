@@ -5,7 +5,7 @@ import { useSearch } from "../../app/hooks/useSearch";
 
 
 export default function SearchBar() {
-  const { query, setQuery, handleSearch, isLoading } = useSearch();
+  const { query, handleSearch } = useSearch();
 
   return (
     <form

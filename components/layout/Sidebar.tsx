@@ -36,12 +36,13 @@ export default function Sidebar({
 
   const handleLogoutAndSwitchTheme = () => {
     // Basculer en mode clair avant de se déconnecter
-    if (theme === "dark") {
-      setTheme("light");
-    }
+
 
     // Effectuer la déconnexion
     handleLogout();
+    if (theme === "dark") {
+      setTheme("light");
+    }
   };
 
   return (

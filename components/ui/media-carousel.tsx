@@ -1,5 +1,3 @@
-"use client";
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
@@ -7,24 +5,28 @@ import { Badge } from "../../components/ui/badge";
 import Image from "next/image";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import type { Movie } from "../../app/api/entities/movie";
+import type { TVShow } from "../../app/api/entities/TVShow";
 
+type MediaItem = Movie | TVShow;
 
 const formatDate = (date: string | null | undefined) => {
   if (!date) return "Date inconnue";
   return format(new Date(date), "dd/MM/yyyy", { locale: fr });
 };
+
 export const MediaCarousel = ({
   title,
   items,
   scrollRef,
   onItemClick,
-  isMovie = true,
+  isMovie,
 }: {
   title: string;
-  items: any[];
+  items: MediaItem[]; // Accepte Movie ou TVShow
   scrollRef: React.RefObject<HTMLDivElement>;
-  onItemClick: (item: any) => void;
-  isMovie?: boolean;
+  onItemClick: (item: MediaItem) => void;
+  isMovie: boolean; // Ajout explicite de la prop isMovie
 }) => {
   if (!items || items.length === 0) return null;
 
@@ -55,21 +57,31 @@ export const MediaCarousel = ({
             {items.map((item) => (
               <Card
                 key={item.id}
-                className=" carousel-item overflow-hidden cursor-pointer transition-all hover:scale-90"
+                className="carousel-item overflow-hidden cursor-pointer transition-all hover:scale-90"
                 onClick={() => onItemClick(item)}
               >
                 <div className="aspect-[2/3] relative">
                   <Image
                     src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                    alt={isMovie ? item.title : item.name}
+                    alt={
+                      isMovie
+                        ? (item as Movie).title || "Film Image"
+                        : (item as TVShow).name || "Show Image"
+                    }
                     fill
                     className="object-cover"
                   />
                 </div>
                 <CardHeader className="p-4">
-                  <CardTitle className="text-lg">{isMovie ? item.title : item.name}</CardTitle>
+                  <CardTitle className="text-lg">
+                    {isMovie ? (item as Movie).title : (item as TVShow).name}
+                  </CardTitle>
                   <CardDescription className="flex items-center justify-between">
-                    <span>{formatDate(isMovie ? item.release_date : item.first_air_date)}</span>
+                    <span>
+                      {isMovie
+                        ? formatDate((item as Movie).release_date)
+                        : formatDate((item as TVShow).first_air_date)}
+                    </span>
                     <Badge variant="secondary">{item.vote_average.toFixed(1)} ★</Badge>
                   </CardDescription>
                 </CardHeader>

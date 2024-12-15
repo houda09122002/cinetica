@@ -4,14 +4,15 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
+import type { SearchResult } from "../../app/hooks/useSearch"; // Importez le type SearchResult
 
 interface SearchResultsProps {
   query: string;
-  onItemClick: (item: any) => void; // Prop pour cliquer sur un élément
+  onItemClick: (item: SearchResult) => void; // Spécifiez le type pour l'élément
 }
 
 export default function SearchResults({ query, onItemClick }: SearchResultsProps) {
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]); // Utilisez le type SearchResult[]
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -54,15 +55,16 @@ export default function SearchResults({ query, onItemClick }: SearchResultsProps
         <Card
           key={item.id}
           className="overflow-hidden cursor-pointer transition-all hover:scale-90"
-          onClick={() => onItemClick(item)}
+          onClick={() => onItemClick(item)} // Utilise l'élément avec le type correct
         >
           <div className="aspect-[2/3] relative">
-            <Image
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt={item.title || item.name}
-              fill
-              className="object-cover"
-            />
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+            alt={item.title || item.name || "Image indisponible"} // Ajouter une valeur par défaut
+            fill
+            className="object-cover"
+          />
+
           </div>
           <CardHeader className="p-4">
             <CardTitle className="text-lg">{item.title || item.name}</CardTitle>

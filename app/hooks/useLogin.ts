@@ -4,14 +4,15 @@ import { useSession } from "next-auth/react";
 import { login } from "../repositories/authRepository";
 
 export const useLogin = () => {
-  const { data: session, status } = useSession();
-  const router = useRouter(); 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { status } = useSession(); // Supprimé 'session' car inutilisé
+  const router = useRouter();
+  const [username, setUsername] = useState<string>(""); // Typage explicite
+  const [password, setPassword] = useState<string>(""); // Typage explicite
+  const [error, setError] = useState<string>(""); // Typage explicite
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Typage explicite
 
   useEffect(() => {
+    // Vérifie si l'utilisateur est authentifié
     if (status === "authenticated" && router.push) {
       router.push("/dashboard");
     }
@@ -24,8 +25,13 @@ export const useLogin = () => {
     try {
       await login(username, password);
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Une erreur inattendue est survenue.");
+    } catch (err: unknown) {
+      // Utilisation de 'unknown' pour les erreurs
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Une erreur inattendue est survenue.");
+      }
     } finally {
       setIsLoading(false);
     }

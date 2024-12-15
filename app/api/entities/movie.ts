@@ -1,5 +1,5 @@
 export interface Movie {
-    runtime: boolean;
+    runtime: number;
     id: number;
     title: string;
     overview: string;

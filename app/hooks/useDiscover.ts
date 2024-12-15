@@ -1,18 +1,17 @@
-// src/hooks/useDiscover.ts
 import { useState, useEffect } from "react";
 import { fetchDiscoverData, searchMoviesAndShows } from "../repositories/discoverRepository";
-import type { Movie } from "@/app/api/entities/movie";
-import type { TVShow } from "@/app/api/entities/TVShow";
+import type { Movie } from "../../app/api/entities/movie";
+import type { TVShow } from "../../app/api/entities/TVShow";
 
-interface DiscoverData {
+export interface DiscoverData {
   movies: Movie[];
   shows: TVShow[];
 }
 
 export const useDiscover = () => {
-  const [discoverData, setDiscoverData] = useState<DiscoverData | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [discoverData, setDiscoverData] = useState<DiscoverData>({ movies: [], shows: [] });
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,12 +22,13 @@ export const useDiscover = () => {
 
   const fetchInitialData = async () => {
     setIsSearching(true);
+    setError(null);
     try {
       const data = await fetchDiscoverData();
       setDiscoverData(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to load data");
+      setError("Failed to load initial data.");
     } finally {
       setIsSearching(false);
     }
@@ -42,12 +42,13 @@ export const useDiscover = () => {
     }
 
     setIsSearching(true);
+    setError(null);
     try {
       const data = await searchMoviesAndShows(query);
       setDiscoverData(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to search");
+      setError("Failed to perform search.");
     } finally {
       setIsSearching(false);
     }

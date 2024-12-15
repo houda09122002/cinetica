@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { MediaDialog } from "../../../../components/ui/media-dialog";
 import MainLayout from "../../../../components/layout/MainLayout";
+import { Movie } from "../../../api/entities/movie";
 const formatDate = (date: string | null | undefined) => {
   if (!date) return "Date inconnue";
   try {
@@ -19,9 +20,9 @@ const formatDate = (date: string | null | undefined) => {
 };
 
 export default function PopularMoviesPage() {
-  const { movies, searchQuery } =
+  const { movies } =
     usePopularMovies();
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   return (
     <MainLayout title="Popular Movies">

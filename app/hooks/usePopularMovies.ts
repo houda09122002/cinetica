@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { fetchPopularMovies, searchMovies } from "../../app/repositories/movieRepository";
-
+import { Movie } from "../api/entities/movie";
 export const usePopularMovies = () => {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [originalMovies, setOriginalMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);

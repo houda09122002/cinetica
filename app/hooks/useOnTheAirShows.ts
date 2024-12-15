@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { fetchOnTheAirShows, searchShows } from "../../app/repositories/tvShowRepository";
-
+import { TVShow } from "../api/entities/TVShow";
 export const useOnTheAirShows = () => {
-  const [shows, setShows] = useState([]);
+  const [shows, setShows] = useState<TVShow[]>([]);
   const [originalShows, setOriginalShows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
