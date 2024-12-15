@@ -13,10 +13,18 @@ import {
 import { Dot } from "lucide-react";
 import { GENRES_MAP, TV_GENRES_MAP } from "../../app/constants/genres";
 
+// Définir un type pour les acteurs
+interface Actor {
+  id: number;
+  name: string;
+  character: string;
+  profile_path?: string;
+}
+
 interface MediaDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  media: Movie | TVShow | null;
+  media: (Movie | TVShow) & { actors?: Actor[] } | null; // Ajout des acteurs
   isMovie?: boolean;
 }
 
@@ -42,10 +50,6 @@ export function MediaDialog({
 
   const getTitle = () => {
     return isMovie ? (media as Movie).title : (media as TVShow).name;
-  };
-
-  const getOriginalTitle = () => {
-    return isMovie ? (media as Movie).original_title : (media as TVShow).original_name;
   };
 
   return (
@@ -105,12 +109,12 @@ export function MediaDialog({
           </div>
 
           {/* Affichage des Acteurs */}
-          {(media as any).actors && (media as any).actors.length > 0 && (
+          {media.actors && media.actors.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Actors</h3>
               {/* Grille dynamique */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                {(media as any).actors.map((actor: any) => (
+                {media.actors.map((actor: Actor) => (
                   <div
                     key={actor.id}
                     className="flex items-start gap-4 bg-white/10 p-4 rounded-lg"
